@@ -7,7 +7,7 @@ function Header() {
     <header>
       <Navbar bg="dark" variant='dark' expand="lg" collapseOnSelect className='py-4'>
           <Container>
-              <LinkContainer to={"/"} className='no-underline'>
+              <LinkContainer to={"/"}>
                 <Navbar.Brand>React-Bootstrap</Navbar.Brand>
               </LinkContainer>
               <Navbar.Toggle aria-controls="basic-navbar-nav" />
