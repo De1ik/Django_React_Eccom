@@ -1,29 +1,37 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom';
-import { LinkContainer } from 'react-router-bootstrap';
 import { Button, Col, Row, Image, Card, ListGroup } from 'react-bootstrap';
-import Rating from '../components/Rating';
+import axios from 'axios'
 
-import products from '../products';
+import Rating from '../components/Rating';
 
 
 function ProductPage() {
     const { id } = useParams();
-    const product = products.find((p) => p._id === id);
+    const [product, setProduct] = useState([])
+
+    useEffect(() => {
+        async function fetchProduct(){
+            const { data } = await axios.get(`/api/products/${id}`)
+            setProduct(data)
+        }
+        fetchProduct()
+
+    }, [])
     
     return (
         <div>
         <Link to={"/"} className='btn btn-dark my-3'>Go Back</Link>
         <Row>
             <Col md={6}>
-                <Image src={product.image} alt={product.name} fluid />
+                <Image src={product.image} alt={product.name} />
             </Col>
             <Col md={4}>
                 <Row>
-                    <Col fluid>
-                        <ListGroup fluid>
+                    <Col>
+                        <ListGroup>
                             <ListGroup.Item>
-                                <Card.Title>{product.name}</Card.Title>
+                                <h3>{product.name}</h3>
                             </ListGroup.Item>
 
                             <ListGroup.Item>
