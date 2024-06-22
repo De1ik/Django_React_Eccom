@@ -34,9 +34,5 @@ function Product({product}) {
   )
 }
 
-Product.propTypes = {
-
-}
-
 export default Product
 

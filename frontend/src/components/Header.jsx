@@ -8,7 +8,7 @@ function Header() {
       <Navbar bg="dark" variant='dark' expand="lg" collapseOnSelect className='py-4'>
           <Container>
               <LinkContainer to={"/"}>
-                <Navbar.Brand>React-Bootstrap</Navbar.Brand>
+                <Navbar.Brand>TeddyShop</Navbar.Brand>
               </LinkContainer>
               <Navbar.Toggle aria-controls="basic-navbar-nav" />
               <Navbar.Collapse id="basic-navbar-nav">
