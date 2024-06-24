@@ -1,11 +1,11 @@
-from .products import products
-from .serializers import ProductSerializer
-from .models import Product
+from ..serializers import ProductSerializer
+from ..models import Product
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import AllowAny
 from rest_framework.authentication import TokenAuthentication
+
 
 
 
@@ -37,4 +37,5 @@ class ProductById(APIView):
         product_by_id = Product.objects.get(_id=id)
         serializer = ProductSerializer(product_by_id, many=False) 
         return Response(serializer.data)    
+
     
