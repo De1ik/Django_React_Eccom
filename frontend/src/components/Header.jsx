@@ -1,8 +1,28 @@
 import React from 'react'
 import { Container, Nav, Navbar } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
+import { useDispatch, useSelector } from 'react-redux'
+import { logOut } from '../slices/authSlice'
+import { useNavigate } from 'react-router-dom'
+import { useEffect } from 'react'
 
 function Header() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { userData } = useSelector((state) => state.authRed)
+
+  const logOutHandler = () => {
+    dispatch(logOut())
+  }
+  
+  useEffect(() => {
+    if (!userData){
+        navigate("/")
+    }
+  }, [userData])
+
+
+
   return (
     <header>
       <Navbar bg="dark" variant='dark' expand="lg" collapseOnSelect className='py-4'>
@@ -16,9 +36,20 @@ function Header() {
                 <LinkContainer to={"/cart"}>
                   <Nav.Link><i className='fas fa-shopping-cart'></i>Cart</Nav.Link>
                 </LinkContainer> 
-                <LinkContainer to={"/login"}>
-                  <Nav.Link><i className='fas fa-user'></i>Login</Nav.Link>
-                </LinkContainer>
+
+                {!userData ? 
+                  <LinkContainer to={"/login"}>
+                    <Nav.Link><i className='fas fa-user'></i>Login</Nav.Link>
+                  </LinkContainer>
+                :   <>
+                      <LinkContainer to={"/profile"}>
+                        <Nav.Link><i className='fas fa-user'></i>Profile</Nav.Link>
+                      </LinkContainer>
+
+                      <LinkContainer to={"/logout"} onClick={logOutHandler}>
+                        <Nav.Link><i className='fas fa-user'></i>Log Out</Nav.Link>    
+                      </LinkContainer>        
+                </>}
               </Nav>
               </Navbar.Collapse>
           </Container>
