@@ -3,7 +3,7 @@ import FormContainer from '../components/FormContainer'
 import { Form, Button } from 'react-bootstrap'
 import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { loginAction } from '../slices/authSlice'
+import { loginAction, getUserAction } from '../slices/authSlice'
 import Loader from '../components/Loader';
 import Message from '../components/Message';
 import { Link } from 'react-router-dom'
@@ -17,11 +17,21 @@ function LoginPage() {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
 
-    const { loading, error, userData, registrateSucces } = useSelector((state) => state.authRed)
+    const { loading, error, userData, registrateSucces, authData } = useSelector((state) => state.authRed)
 
     const loginHandler = (e) => {
         e.preventDefault()
         dispatch(loginAction({ password, email }))
+            .then((resultAction) => {
+                if (loginAction.fulfilled.match(resultAction)) {
+                    return dispatch(getUserAction());
+                } else {
+                    console.error('Login failed:', resultAction.payload);
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
     }
 
     useEffect(() => {

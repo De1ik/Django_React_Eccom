@@ -14,6 +14,8 @@ from rest_framework import status
 
 
 
+
+
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     # @classmethod
     # def get_token(cls, user):
@@ -28,15 +30,33 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         data = super().validate(attrs)
         serializer = UserSerializerWithToken(self.user).data
 
-        for k, v in serializer.items():
-            data[k] = v
+        new_data = {}
 
-        return data
+        for k, v in serializer.items():
+            new_data[k] = v
+
+        return new_data
     
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer    
     
 
+class UpdateUserInfo(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request):
+        user = request.user
+        data = request.data
+
+        serializer = UserSerializerWithToken(user, many = False)
+
+        user.email = data["email"]
+        user.username = data["email"]
+        user.first_name = data["first_name"]
+
+        user.save()
+
+        return Response(serializer.data)
 
 class RegisterUser(APIView):
     permission_classes = [AllowAny]
@@ -47,7 +67,6 @@ class RegisterUser(APIView):
 
             user = User.objects.create(
                 email = data["email"],
-                username = data["username"],
                 first_name = data["first_name"],
                 password = make_password(data["password"]),
             )

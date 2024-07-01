@@ -8,6 +8,7 @@ import ProductPage from './pages/ProductPage'
 import CartPage from './pages/CartPage'
 import LoginPage from './pages/LoginPage'
 import RegistratePage from './pages/RegistratePage'
+import ProfilePage from './pages/ProfilePage'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -19,11 +20,12 @@ function App() {
       <main>
         <Container>
           <Routes>
-            <Route path="/" element={<HomePage/>} />
+            <Route path="/" element={<HomePage/>} exact />
             <Route path="/product/:id" element={<ProductPage/>} />
             <Route path="/cart/:id?" element={<CartPage/>} />
             <Route path="/login" element={<LoginPage/>} />
             <Route path="/registrate" element={<RegistratePage/>} />
+            <Route path="/profile" element={<ProfilePage/>} />
           </Routes>
         </Container>
       </main>
