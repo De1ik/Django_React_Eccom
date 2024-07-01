@@ -8,5 +8,6 @@ urlpatterns = [
     path("/list", AllUsers.as_view(), name="all_users"),
     path("/registrate", RegisterUser.as_view(), name="user_registrate"),
     path('/login', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('/update', UpdateUserInfo.as_view(), name="user_update"),
 
 ]

@@ -20,7 +20,7 @@ function HomePage() {
     return (
         <>
         <div>
-            <h1>New Products</h1>
+            <h1 className='text-center m-4'>New Products</h1>
 
             {
                 loading ? <Loader/> :
