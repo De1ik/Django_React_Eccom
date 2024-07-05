@@ -4,23 +4,12 @@ import { LinkContainer } from 'react-router-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { logOut } from '../slices/authSlice'
 import { useNavigate } from 'react-router-dom'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 function Header() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { userData } = useSelector((state) => state.authRed)
-
-  const logOutHandler = () => {
-    dispatch(logOut())
-  }
-  
-  useEffect(() => {
-    if (!userData){
-        navigate("/")
-    }
-  }, [userData])
-
 
 
   return (
@@ -44,11 +33,7 @@ function Header() {
                 :   <>
                       <LinkContainer to={"/profile"}>
                         <Nav.Link><i className='fas fa-user'></i>Profile</Nav.Link>
-                      </LinkContainer>
-
-                      <LinkContainer to={"/logout"} onClick={logOutHandler}>
-                        <Nav.Link><i className='fas fa-user'></i>Log Out</Nav.Link>    
-                      </LinkContainer>        
+                      </LinkContainer>      
                 </>}
               </Nav>
               </Navbar.Collapse>

@@ -1,0 +1,20 @@
+{% load i18n %}
+{% block subject %}
+    {% blocktrans %}Account activation{% endblocktrans %}
+{% endblock subject %}
+
+{% block text_body %}
+    {% blocktrans %}
+    You're receiving this email because you need to finish the activation process on our site.
+    {% endblocktrans %}
+
+    {% blocktrans %}
+    Please go to the following page to activate your account:
+    {% endblocktrans %}
+
+    <a href="{{ protocol }}://{{ domain }}/{{ url }}">{{ protocol }}://{{ domain }}{{ url }}</a>
+
+    {% blocktrans %}
+    Thanks for using our site!
+    {% endblocktrans %}
+{% endblock text_body %}

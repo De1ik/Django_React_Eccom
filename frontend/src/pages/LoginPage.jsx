@@ -1,7 +1,7 @@
 import React from 'react'
 import FormContainer from '../components/FormContainer'
 import { Form, Button } from 'react-bootstrap'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { loginAction, getUserAction } from '../slices/authSlice'
 import Loader from '../components/Loader';
@@ -16,37 +16,47 @@ function LoginPage() {
     const navigate = useNavigate();
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const [errorPage, setError] = useState("")
 
-    const { loading, error, userData, registrateSucces, authData } = useSelector((state) => state.authRed)
+    const { loading, error, emailAcivated } = useSelector((state) => state.authRed)
 
     const loginHandler = (e) => {
         e.preventDefault()
         dispatch(loginAction({ password, email }))
             .then((resultAction) => {
                 if (loginAction.fulfilled.match(resultAction)) {
-                    return dispatch(getUserAction());
+                    dispatch(getUserAction())
+                        .then((resultAction) => {
+                            if (getUserAction.fulfilled.match(resultAction)){
+                                navigate("/")
+                                return
+                            }
+                            else {
+                                setError('Login user download failed: ' + resultAction.payload);
+                            }
+                            })
+                        .catch((error) => {
+                            setError('User info error: ' + error);
+                        });
                 } else {
-                    console.error('Login failed:', resultAction.payload);
+                    setError('Login failed: ' + resultAction.payload);
                 }
             })
             .catch((error) => {
-                console.error('Error:', error);
+                setError('Login failed: ' + error);
             });
     }
 
-    useEffect(() => {
-        if (userData){
-            navigate("/")
-        }
-    }, [userData])
 
 
   return (
     <>
     <h1 className='text-center m-5'>Sign In</h1>
     {error && <Message type="danger">{error}</Message>}
-    {registrateSucces && <Message type="success">Registration was succes</Message>}
+    {errorPage && <Message type="danger">{errorPage}</Message>}
+    {emailAcivated && <Message type="success">Email was activated</Message>}
     {loading ? <Loader/> : 
+        <>
         <FormContainer>
             <Form onSubmit={loginHandler}>
                 <Form.Group className="mb-3" controlId="email">
@@ -67,14 +77,18 @@ function LoginPage() {
                         onChange={(e) => setPassword(e.target.value)}
                     />
                 </Form.Group> 
-                <Button variant="primary" type='submit'>
-                    Login
-                </Button>
-                <span className='m-3'>
-                    Do not have an account? <Link to="/registrate">Sign up now</Link>
-                </span>
+                <div className="d-flex flex-column justify-content-center align-items-center">
+                    <Button style={{ minWidth: '100px' }} variant="primary" type='submit'>
+                        Login
+                    </Button>
+                    <span className='m-3'>
+                        Do not have an account? <Link to="/registrate">Sign up now</Link>
+                    </span>
+                </div>
+                <p className='my-4'><Link to="/password/reset">Forgot the password? Reset it</Link></p>
             </Form>  
         </FormContainer>
+        </>
     }    
     </>
   )
