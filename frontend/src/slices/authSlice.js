@@ -46,11 +46,40 @@ export const registrateAction = createAsyncThunk(
             const { email, name, password } = createUserDate
             
             const { data } = await axios.post(
-                "/api/user/registrate",
+                "/api/auth/users/",
                 { 
                     "email": email,
                     "first_name": name,
                     "password": password 
+                },
+                config
+            )
+            return data
+        }
+        catch (error) {
+            console.log(error)
+            return rejectWithValue(error.response?.data?.message || error.message);
+        }
+    }
+)
+
+
+export const activatorAction = createAsyncThunk(
+    "user/email/activation",
+    async (dataPage, { rejectWithValue }) => {
+        try{
+            const config = {
+                headers: {
+                    'Content-type': 'application/json'
+                }
+            }
+    
+            const { uid, token } = dataPage
+            const { data } = await axios.post(
+                "/api/auth/users/activation/",
+                { 
+                    "uid": uid,
+                    "token": token,
                 },
                 config
             )
@@ -62,13 +91,15 @@ export const registrateAction = createAsyncThunk(
     }
 )
 
+
+
 export const putUserInfoAction = createAsyncThunk(
     'user/getInfo',
     async (updateInfo, { getState, rejectWithValue }) => {
         try {
             const { authRed } = getState()
-            const { userData } = authRed;
-            const token = userData.token
+            const { authData } = authRed;
+            const token = authData.access
             const { userEmail, name } = updateInfo
     
             const config = {
@@ -121,6 +152,62 @@ export const getUserAction  = createAsyncThunk(
 )
 
 
+export const resetPassAction = createAsyncThunk(
+    'user/reset-password',
+    async (email, { rejectWithValue }) => {
+        try{
+            const config = {
+                headers: {
+                    'Content-type': 'application/json',
+                    // 'Accept': 'application/json',
+                }
+            }
+
+            const { data } = await axios.post(
+                '/api/auth/users/reset_password/',
+                {"email": email},
+                config    
+            )
+            return data
+        }
+        catch (e){
+            return rejectWithValue(error.response?.data?.message || error.message);
+        }
+    }
+)
+
+
+export const resetPassConfirmAction = createAsyncThunk(
+    'user/reset-password/confirm',
+    async (confData, { rejectWithValue, getState }) => {
+        try{
+            const { password, uid, token } = confData
+            const config = {
+                headers: {
+                    'Content-type': 'application/json',
+                    // 'Accept': 'application/json',
+                }
+            }
+
+
+            const { data } = await axios.post(
+                '/api/auth/users/reset_password_confirm/',
+                {
+                    "new_password": password,
+                    "uid": uid,
+                    "token": token
+                },
+                config    
+            )
+            return data
+        }
+        catch (e){
+            return rejectWithValue(error.response?.data?.message || error.message);
+        }
+    }
+)
+
+
 const userAuthSlice = createSlice({
     name: "userAuth",
     initialState: {
@@ -129,13 +216,21 @@ const userAuthSlice = createSlice({
         loading: false,
         error: null,
         userData: userDataFromStorage,
-        registrateSucces: false
+        registrateSucces: false,
+        resetPassRequest: false,
+        resetPassSuccess: false,
+        emailAcivated: false,
+        updatedInfo: false,
     },
     reducers: {
         logOut: (state) => {
             localStorage.removeItem("userData")
             localStorage.removeItem("authData")
             state.userData = null
+            state.isAuth = false
+        },
+        resendPasswordEmail: (state) => {
+            state.resetPassRequest = false;
         }
     },
     extraReducers: (builder) => {
@@ -143,44 +238,51 @@ const userAuthSlice = createSlice({
             .addCase(loginAction.pending, (state) => {
                 state.loading = true
                 state.error = null
-                state.registrateSucces = false
             })
             .addCase(loginAction.fulfilled, (state, action) => {
                 state.loading = false
                 state.isAuth = true
-                console.log("workin")
-                console.log(action.payload)
                 state.authData = action.payload
                 localStorage.setItem("authData", JSON.stringify(action.payload))
-                state.registrateSucces = false
             })
             .addCase(loginAction.rejected, (state, action) => {
                 state.loading = false,
                 state.error = action.payload
-                state.registrateSucces = false
+
             })
             .addCase(getUserAction.pending, (state) => {
                 state.loading = true
                 state.error = null
-                state.registrateSucces = false
             })
             .addCase(getUserAction.fulfilled, (state, action) => {
                 state.loading = false,
                 state.userData = action.payload
                 localStorage.setItem("userData", JSON.stringify(action.payload))
-                state.registrateSucces = false
             })
             .addCase(getUserAction.rejected, (state, action) => {
                 state.loading = false,
                 state.error = action.payload
-                state.registrateSucces = false
+            })
+
+
+            .addCase(activatorAction.pending, (state) => {
+                state.loading = true
+                state.error = null
+            })
+            .addCase(activatorAction.fulfilled, (state) => {
+                state.loading = false
+                state.error = null
+                state.emailAcivated = true
+            })
+            .addCase(activatorAction.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.payload
             })
 
 
             .addCase(registrateAction.pending, (state) => {
                 state.loading = true
                 state.error = null
-                state.registrateSucces = false
             })
             .addCase(registrateAction.fulfilled, (state) => {
                 state.loading = false
@@ -190,27 +292,54 @@ const userAuthSlice = createSlice({
             .addCase(registrateAction.rejected, (state, action) => {
                 state.loading = false
                 state.error = action.payload
-                state.registrateSucces = false
             })
+
             .addCase(putUserInfoAction.pending, (state) => {
                 state.loading = true
                 state.error = null
-                state.registrateSucces = false
             })
             .addCase(putUserInfoAction.fulfilled, (state, action) => {
                 state.loading = false,
                 state.userData = action.payload
                 localStorage.setItem("userData", JSON.stringify(action.payload))
-                state.registrateSucces = false
+                state.updatedInfo = true
             })
             .addCase(putUserInfoAction.rejected, (state, action) => {
                 state.loading = false,
                 state.error = action.payload
-                state.registrateSucces = false
+            })
+
+
+            .addCase(resetPassAction.pending, (state) => {
+                state.loading = true
+                state.error = null
+                state.resetPassRequest = true
+            })
+            .addCase(resetPassAction.fulfilled, (state) => {
+                state.loading = false
+            })
+            .addCase(resetPassAction.rejected, (state, action) => {
+                state.loading = false,
+                state.error = action.payload
+            })
+
+            .addCase(resetPassConfirmAction.pending, (state) => {
+                state.loading = true
+                state.error = null
+                state.resetPassRequest = false
+            })
+            .addCase(resetPassConfirmAction.fulfilled, (state) => {
+                state.loading = false,
+                state.resetPassSuccess = true
+                state.resetPassSuccess = false
+            })
+            .addCase(resetPassConfirmAction.rejected, (state, action) => {
+                state.loading = false,
+                state.error = action.payload
             })
     }
 
 })
 
 export default userAuthSlice.reducer
-export const { logOut } = userAuthSlice.actions
+export const { logOut, resendPasswordEmail } = userAuthSlice.actions

@@ -9,6 +9,9 @@ import CartPage from './pages/CartPage'
 import LoginPage from './pages/LoginPage'
 import RegistratePage from './pages/RegistratePage'
 import ProfilePage from './pages/ProfilePage'
+import ResetPass from './pages/ResetPass'
+import ResetPassConf from './pages/ResetPassConf'
+import EmailActivate from './pages/EmailActivate'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -26,6 +29,9 @@ function App() {
             <Route path="/login" element={<LoginPage/>} />
             <Route path="/registrate" element={<RegistratePage/>} />
             <Route path="/profile" element={<ProfilePage/>} />
+            <Route path="/password/reset/confirm/:uid/:token" element={<ResetPassConf/>} />
+            <Route path="/password/reset" element={<ResetPass/>} exact />
+            <Route path="/activate/:uid/:token" element={<EmailActivate/>} />
           </Routes>
         </Container>
       </main>

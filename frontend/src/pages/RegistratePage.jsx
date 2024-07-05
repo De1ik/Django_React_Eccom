@@ -32,12 +32,6 @@ function RegistratePage() {
     }
 
     useEffect(() => {
-        if (registrateSucces){
-            naigate("/login?registration=success")
-        }
-    }, [registrateSucces])
-
-    useEffect(() => {
         if (password !== "" && confirmPassword !== "" && password !== confirmPassword){
             setMessage("passwords must be equal")
         }
@@ -49,11 +43,13 @@ function RegistratePage() {
 
 
   return (
-    <>
+    <div>
     <h1 className='text-center m-5'>Sign Up</h1>
 
     {error && <Message type="danger">{error}</Message>}
 
+    {registrateSucces ? <h2>Check Mail in Gmail</h2> : 
+    <>
     {!loading ? 
         <FormContainer>
             <Form onSubmit={registrateHandler}>
@@ -104,8 +100,10 @@ function RegistratePage() {
         </FormContainer>
     :
         <Loader/>
-    }    
-    </>    
+    }   
+    </>
+    } 
+    </div>    
   )
 }
 

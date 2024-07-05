@@ -1,36 +1,58 @@
 import React from 'react'
 import { Row, Col } from 'react-bootstrap'
 import FormContainer from '../components/FormContainer'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
 import { useSelector, useDispatch } from 'react-redux'
 import { Form, Button } from 'react-bootstrap'
 import { putUserInfoAction } from '../slices/authSlice'
+import { Link } from 'react-router-dom'
+import LogoutConfirmation from '../components/LogoutConfirm'
+import { logOut } from '../slices/authSlice'
+import { useNavigate } from 'react-router-dom'
+
 
 function ProfilePage() {
 
-    const { loading, error, userData } = useSelector((state) => state.authRed)
-    const { email, first_name } = userData
     const dispatch = useDispatch()
+    const navigate = useNavigate();
+    const { loading, error, userData, resetPassSuccess, updatedInfo } = useSelector((state) => state.authRed)
+    const { email, first_name } = userData
+
+    const [pageError, setPageError] = useState("")
     const [name, setName] = useState(first_name)
     const [userEmail, setEmail] = useState(email)
     const [message, setMessage] = useState("")
 
+    const [showModal, setShowModal] = useState(false)
+    const handleClose = () => setShowModal(false);
+    const handleShow = () => setShowModal(true);
+
     const updateHandler = (e) => {
-        e.preventDefault()
-        dispatch(putUserInfoAction( { userEmail, name } ))
-        if (!error && !loading) {
-            setMessage("Your info was updated")
+        try{
+            e.preventDefault()
+            dispatch(putUserInfoAction( { userEmail, name } ))
+        }
+        catch(error) {
+            setPageError('Update profile error:', error);
         }
 
     }
 
-    useEffect(() => {
-        if (error) {
-            setMessage("")
+    const handleLogout = () => {
+        try{
+            dispatch(logOut())
+            navigate('/login')
         }
-    }, [error])
+        catch(error) {
+            setPageError('Logout error:', error);
+        }
+        finally{
+            handleClose();
+        }
+      }
+
 
     
 
@@ -40,8 +62,11 @@ function ProfilePage() {
         <Row>
             <Col md={6} xs={12}>
                 <h2 className='text-center p-4'>Your Information</h2>
+                {pageError && <Message type="danger">{pageError}</Message>}
                 {error && <Message type="danger">{error}</Message>}
-
+                {resetPassSuccess && <Message type="success">Password was reset</Message>}
+                {updatedInfo && <Message type="success">Your Info were updated</Message>}
+                {message && <Message type="info">{message}</Message>}
                 {!loading ? 
                 <FormContainer>
                     <Form onSubmit={updateHandler}>
@@ -63,13 +88,21 @@ function ProfilePage() {
                                 onChange={(e) => setEmail(e.target.value)}
                             />
                         </Form.Group>
-                        {message && <Message type="info">{message}</Message>}
                         <Button variant='primary' type='submit'>
                             Update
                         </Button>
+                        <p className='my-3'><Link to="/password/reset">Reset password</Link></p>
                     </Form>
                 </FormContainer>
                 : <Loader/>}
+                        <Button variant="danger" onClick={handleShow}>
+                            Log Out
+                        </Button>
+                <LogoutConfirmation
+                    show={showModal}
+                    handleClose={handleClose}
+                    handleLogout={handleLogout}
+                />
             </Col>
             <Col md={6} xs={12}>
                 <h2 className='text-center p-4'>Your Requests</h2>
