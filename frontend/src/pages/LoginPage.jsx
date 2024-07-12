@@ -1,7 +1,7 @@
 import React from 'react'
 import FormContainer from '../components/FormContainer'
 import { Form, Button } from 'react-bootstrap'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { loginAction, getUserAction } from '../slices/authSlice'
 import Loader from '../components/Loader';
@@ -18,7 +18,7 @@ function LoginPage() {
     const [password, setPassword] = useState("")
     const [errorPage, setError] = useState("")
 
-    const { loading, error, emailAcivated } = useSelector((state) => state.authRed)
+    const { loading, error, emailAcivated, isAuth } = useSelector((state) => state.authRed)
 
     const loginHandler = (e) => {
         e.preventDefault()

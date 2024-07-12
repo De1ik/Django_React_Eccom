@@ -4,6 +4,7 @@ import axios from 'axios'
 
 const userDataFromStorage = JSON.parse(localStorage.getItem("userData")) || null
 const authDataFromStorage = JSON.parse(localStorage.getItem("authData")) || null
+const isAuthFromStorage = JSON.parse(localStorage.getItem("isAuth")) || false
 
 export const loginAction = createAsyncThunk(
     "user/login",
@@ -170,7 +171,7 @@ export const resetPassAction = createAsyncThunk(
             )
             return data
         }
-        catch (e){
+        catch (error){
             return rejectWithValue(error.response?.data?.message || error.message);
         }
     }
@@ -201,7 +202,7 @@ export const resetPassConfirmAction = createAsyncThunk(
             )
             return data
         }
-        catch (e){
+        catch (error){
             return rejectWithValue(error.response?.data?.message || error.message);
         }
     }
@@ -211,7 +212,7 @@ export const resetPassConfirmAction = createAsyncThunk(
 const userAuthSlice = createSlice({
     name: "userAuth",
     initialState: {
-        isAuth: false,
+        isAuth: isAuthFromStorage,
         authData: authDataFromStorage,
         loading: false,
         error: null,
@@ -224,10 +225,17 @@ const userAuthSlice = createSlice({
     },
     reducers: {
         logOut: (state) => {
-            localStorage.removeItem("userData")
-            localStorage.removeItem("authData")
+            // localStorage.removeItem("cartItems")
+            // localStorage.removeItem("userData")
+            // localStorage.removeItem("isAuth")
+            // localStorage.removeItem("authData")
+            localStorage.clear()
             state.userData = null
             state.isAuth = false
+            state.registrateSucces = false
+            state.resetPassRequest = false
+            state.emailAcivated = false
+            state.updatedInfo = false
         },
         resendPasswordEmail: (state) => {
             state.resetPassRequest = false;
@@ -241,9 +249,11 @@ const userAuthSlice = createSlice({
             })
             .addCase(loginAction.fulfilled, (state, action) => {
                 state.loading = false
-                state.isAuth = true
                 state.authData = action.payload
+                state.resetPassRequest = false
                 localStorage.setItem("authData", JSON.stringify(action.payload))
+                localStorage.setItem("isAuth", JSON.stringify(true))
+                state.isAuth = true
             })
             .addCase(loginAction.rejected, (state, action) => {
                 state.loading = false,

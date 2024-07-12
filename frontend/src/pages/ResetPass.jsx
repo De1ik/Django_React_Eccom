@@ -13,7 +13,7 @@ function ResetPass() {
 
     const navigate = useNavigate()
     const userData = JSON.parse(localStorage.getItem("userData")) || null
-    const emailLocalStr = userData ? userData["email"] : null
+    const emailLocalStr = userData ? userData["email"] : ""
     const [email, setEmail] = useState(emailLocalStr)
     const [pageError, setPageError] = useState("")
     const dispatch = useDispatch()
@@ -21,9 +21,10 @@ function ResetPass() {
 
     const resetPassHandler = (e) => {
       e.preventDefault()
-      if (emailLocalStr === null || emailLocalStr === email){
+      if (emailLocalStr === "" || emailLocalStr === email){
         try{
           dispatch(resetPassAction(email))
+          setPageError("")
         }
         catch(e){
           setPageError("Reset password error: " + e)

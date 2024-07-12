@@ -1,15 +1,20 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Row, Col, Button, Card, ListGroup, Image } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { removeFromCart, increaseQnty, decreaseQnty } from '../slices/cartSlice'
 import Message from '../components/Message'
+import { useState } from 'react'
 
 
 function CartPage() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const cartItems = useSelector((state) => state.cartRed.cartItems)
+    const [price, setPrice] = useState(0)
+    const [taxPrice, setTaxPrice] = useState(0)
+    const [shippingPrice, setShippingPrice] = useState(0)
+    const [totalPrice, setTotalPrice] = useState(0)
 
     const removeItem = (itemId) => {
         dispatch(removeFromCart(itemId))
@@ -24,8 +29,24 @@ function CartPage() {
     }
     
     const checkoutHandler = () => {
-        navigate('/login?redirect=shipping')
+        navigate('/shipping')
     }
+
+    useEffect(() => {
+        const newPrice = parseFloat(cartItems.reduce((acc, item) => acc + (item.qnty * item.price), 0))
+        setPrice(newPrice.toFixed(2))
+    }, [cartItems])
+
+    useEffect(() => {
+        const newTaxPrice = parseFloat((parseFloat(price) * 0.10).toFixed(2))
+        setTaxPrice(newTaxPrice.toFixed(2))
+    
+        const newShippingPrice = parseFloat((parseFloat(price) > 100 ? 0 : cartItems.length > 0 ? 5.99 : 0).toFixed(2))
+        setShippingPrice(newShippingPrice.toFixed(2))
+    
+        const newTotalPrice = parseFloat((parseFloat(price) + newTaxPrice + newShippingPrice).toFixed(2))
+        setTotalPrice(newTotalPrice.toFixed(2))
+    }, [price, cartItems])
 
     return (
         <div>
@@ -77,7 +98,10 @@ function CartPage() {
                         <ListGroup>
                             <ListGroup.Item>
                                 <h2>Your Cart ({cartItems.reduce((acc, item) => acc + item.qnty, 0)})</h2>
-                                <p>Total price: <strong>${cartItems.reduce((acc, item) => acc + (item.qnty * item.price), 0)}</strong></p>
+                                <p>Products price: <strong>${price}</strong></p>
+                                <p>Tax price: <strong>${taxPrice}</strong></p>
+                                <p>Shipping price: <strong>${shippingPrice}</strong></p>
+                                <p>Total price: <strong>${totalPrice}</strong></p>
                             </ListGroup.Item>
 
                             <ListGroup.Item>
