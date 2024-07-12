@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Row, Col } from 'react-bootstrap'
 import FormContainer from '../components/FormContainer'
 import { useState } from 'react'
@@ -20,6 +20,17 @@ function ProfilePage() {
     const { loading, error, userData, resetPassSuccess, updatedInfo } = useSelector((state) => state.authRed)
     const { email, first_name } = userData
 
+
+    useEffect(() => {
+        if (email === null){
+            setPageLoad(true)
+        }
+        else {
+            setPageLoad(false)
+        }
+    }, [email, first_name])
+
+    const [pageLoad, setPageLoad] = useState(false)
     const [pageError, setPageError] = useState("")
     const [name, setName] = useState(first_name)
     const [userEmail, setEmail] = useState(email)
@@ -44,6 +55,7 @@ function ProfilePage() {
         try{
             dispatch(logOut())
             navigate('/login')
+            window.location.reload();
         }
         catch(error) {
             setPageError('Logout error:', error);
@@ -67,7 +79,7 @@ function ProfilePage() {
                 {resetPassSuccess && <Message type="success">Password was reset</Message>}
                 {updatedInfo && <Message type="success">Your Info were updated</Message>}
                 {message && <Message type="info">{message}</Message>}
-                {!loading ? 
+                {!loading && !pageLoad ? 
                 <FormContainer>
                     <Form onSubmit={updateHandler}>
                         <Form.Group className="mb-3" controlId="name">

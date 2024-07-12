@@ -6,3 +6,15 @@ main{
   margin: 0.1rem;
   font-size: 15px;
 }
+
+.link-button {
+  background: none;
+  border: none;
+  color: blue;
+  text-decoration: underline;
+  cursor: pointer;
+  font: inherit;
+}
+.link-button:hover {
+  color: darkblue;
+}

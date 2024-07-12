@@ -13,9 +13,9 @@ import { useNavigate } from 'react-router-dom'
 function RegistratePage() {
 
     const dispatch = useDispatch()
-    const naigate = useNavigate()
+    const navigate = useNavigate()
 
-    const { registrateSucces, loading, error } = useSelector((state) => state.authRed)
+    const { registrateSucces, loading, error, isAuth } = useSelector((state) => state.authRed)
 
     const [name, setName] = useState("")
     const [email, setEmail] = useState("")
