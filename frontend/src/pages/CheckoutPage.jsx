@@ -85,7 +85,7 @@ function CheckoutPage() {
                 dispatch(createOrder({orderData, shippingData, orderItemsData, token})).then((resultAction) => {
                     if (createOrder.fulfilled.match(resultAction)){
                         localStorage.removeItem("cartItems")
-                        navigate('/orders')
+                        navigate('/all-orders')
                         window.location.reload();
                         return
                     }

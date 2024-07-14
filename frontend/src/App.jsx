@@ -18,6 +18,7 @@ import ShippingPage from './pages/ShippingPage'
 import PayMethodPage from './pages/PayMethodPage'
 import CheckoutPage from './pages/CheckoutPage'
 import AllOrders from './pages/AllOrders'
+import OrderDetails from './pages/OrderDetails'
 
 
 function App() {
@@ -38,6 +39,8 @@ function App() {
             <Route path="/pay-method" element={<PayMethodPage/>} />
             <Route path="/checkout" element={<CheckoutPage/>} />
 
+
+
             <Route path="/login" element={<LoginPage/>} />
             <Route path="/registrate" element={<RegistratePage/>} />
             <Route path="/profile" element={<ProfilePage />} />
@@ -55,7 +58,8 @@ function App() {
               <Route path="/profile" element={<ProfilePage />} />
             </Route> */}
 
-            <Route path="/orders" element={<AllOrders />} />
+            <Route path="/all-orders" element={<AllOrders />} />
+            <Route path="/order/:id" element={<OrderDetails/>} />
 
             <Route path="/password/reset/confirm/:uid/:token" element={<ResetPassConf/>} />
             <Route path="/password/reset" element={<ResetPass/>} exact />
