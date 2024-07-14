@@ -7,7 +7,7 @@ import Message from '../components/Message'
 import { useSelector, useDispatch } from 'react-redux'
 import { Form, Button } from 'react-bootstrap'
 import { putUserInfoAction } from '../slices/authSlice'
-import { Link } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import LogoutConfirmation from '../components/LogoutConfirm'
 import { logOut } from '../slices/authSlice'
 import { useNavigate } from 'react-router-dom'
@@ -116,8 +116,9 @@ function ProfilePage() {
                     handleLogout={handleLogout}
                 />
             </Col>
-            <Col md={6} xs={12}>
+            <Col md={6} xs={12} className="d-flex flex-column justify-content-center align-items-center">
                 <h2 className='text-center p-4'>Your Requests</h2>
+                <Button onClick={() => navigate("/all-orders")}>See All Orders</Button>
             </Col>
         </Row>
     </div>

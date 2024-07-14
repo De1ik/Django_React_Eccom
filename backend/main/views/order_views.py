@@ -60,3 +60,44 @@ class CreateOrder(APIView):
         }
 
         return Response(response_data, status=status.HTTP_201_CREATED)
+    
+
+class GetAllOrders(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        try:
+            user = request.user
+
+            if (user.is_staff):
+                all_orders = Order.objects.all()
+            else:
+                all_orders = Order.objects.filter(user=user)
+
+            order_serializer = OrderSerializer(all_orders, many=True)
+            return Response(order_serializer.data, status=status.HTTP_200_OK)
+        except:
+            return Response({"detail": "Some error appear when you try to see all orders"}, status=status.HTTP_400_BAD_REQUEST)
+
+    
+
+class GetSpecificOrder(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, id):
+        try:
+            user = request.user
+
+            try:
+                order = Order.objects.get(_id=id)
+            except:
+                return Response({"detail": f"Some error appear when you try to see the order with id {id}"}, status=status.HTTP_404_NOT_FOUND)
+
+            if (order.user == user or user.is_staff):
+                order_serializer = OrderSerializer(order, many=False)
+                return Response(order_serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response({"detail": "You are not allowed to see this order"}, status=status.HTTP_403_FORBIDDEN)
+        except:
+                return Response({"detail": f"Some error appear when you try to see the order with id {id}"}, status=status.HTTP_400_BAD_REQUEST)
+
