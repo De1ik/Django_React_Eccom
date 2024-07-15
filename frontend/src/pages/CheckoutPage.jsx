@@ -129,7 +129,7 @@ function CheckoutPage() {
             {pageError && <Message type="danger">{pageError}</Message>}
             <Row className="my-5">
                 <Col lg={4} md={5} sm={12} className='mx-2 my-3'>
-                    <h3 className='text-center mb-4'>Adress Detailed</h3>
+                    <h3 className='text-center mb-4'>Adress Details</h3>
                     <Row className="mb-5">
                                 <Col md={6}>
                                     <Form.Label>Phone Number</Form.Label>
