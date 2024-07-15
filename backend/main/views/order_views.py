@@ -95,9 +95,27 @@ class GetSpecificOrder(APIView):
 
             if (order.user == user or user.is_staff):
                 order_serializer = OrderSerializer(order, many=False)
-                return Response(order_serializer.data, status=status.HTTP_200_OK)
             else:
                 return Response({"detail": "You are not allowed to see this order"}, status=status.HTTP_403_FORBIDDEN)
+            
+            try:
+                order_items = OrderItem.objects.filter(order=order)
+                order_items_serializer = OrderItemSerializer(order_items, many=True)
+            except:
+                return Response({"detail": f"Some error appear when you try to see the order with id {id}. Eroro with order items."}, status=status.HTTP_404_NOT_FOUND)
+        
+            try:
+                order_shipp = ShippingInfo.objects.get(order=order)
+                order_shipp_serializer = ShippingInfoSerializer(order_shipp, many=False)
+            except:
+                return Response({"detail": f"Some error appear when you try to see the order with id {id}. Error with shipping order."}, status=status.HTTP_404_NOT_FOUND)
+            
+            response_data = {
+                "order": order_serializer.data,
+                "orderItems": order_items_serializer.data,
+                "orderShipping": order_shipp_serializer.data,
+            }
+            return Response(response_data, status=status.HTTP_200_OK)
         except:
                 return Response({"detail": f"Some error appear when you try to see the order with id {id}"}, status=status.HTTP_400_BAD_REQUEST)
 
