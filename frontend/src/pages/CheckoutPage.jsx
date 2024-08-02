@@ -9,14 +9,42 @@ import { Form } from 'react-bootstrap'
 import FormContainer from '../components/FormContainer'
 import OrderSters from '../components/OrderSters'
 import { createOrder } from '../slices/orderSlice'
+import { toast } from 'react-toastify'
+import { logOut } from '../slices/authSlice'
+// import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js"
 
 
 function CheckoutPage() {
+
+    const notify = (message) => toast.success(message, {
+        position: "bottom-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+    }
+    )
+
+    const notifyError = (message) => toast.error(message, {
+        position: "bottom-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+    }
+    )
+
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const cartItems = useSelector((state) => state.cartRed.cartItems)
-    const token = useSelector((state) => state.authRed.authData.access)
+    const authRed = useSelector((state) => state.authRed)
+    const [token, setToken] = useState("")
     const [pageError, setPageError] = useState("")
     const [price, setPrice] = useState(0)
     const [taxPrice, setTaxPrice] = useState(0)
@@ -25,9 +53,6 @@ function CheckoutPage() {
 
     const userData = JSON.parse(localStorage.getItem("userData"))
     const shipData = JSON.parse(localStorage.getItem("shipData")) || ""
-    if (!shipData){
-        navigate("/shipping")
-    }
     const country = shipData["country"]
     const town = shipData["town"]
     const address = shipData["address"]
@@ -38,7 +63,19 @@ function CheckoutPage() {
     const payment = JSON.parse(localStorage.getItem("paymentMethod"))
     const [paymentMethod, setPaymentMethod] = useState("")
 
+    // useEffect(() => {
+    //     if (error && error.includes("401")){
+            // dispatch(logOut())
+            // navigate('/login')
+            // notifyError("User was unautharized. Authentification required")
+    //     }
+    // }, [error])
+
     useEffect(() => {
+        console.log(authRed)
+        if (authRed.authData){
+            setToken(authRed.authData.access)
+        }
         if (!payment){
             navigate("/pay-method")
         } else{
@@ -47,19 +84,24 @@ function CheckoutPage() {
     }, [])
 
 
+    useEffect(() => {
+        const newPrice = parseFloat(cartItems.reduce((acc, item) => acc + (item.qnty * item.price), 0))
+        setPrice(newPrice.toFixed(2))
+    }, [cartItems])
 
-    const removeItem = (itemId) => {
-        dispatch(removeFromCart(itemId))
-    }
 
-    const incrQnty = (id) => {
-        dispatch(increaseQnty(id))
-    }
-
-    const decrQnty = (id) => {
-        dispatch(decreaseQnty(id))
-    }
+    useEffect(() => {
+        const newTaxPrice = parseFloat((parseFloat(price) * 0.10).toFixed(2))
+        setTaxPrice(newTaxPrice.toFixed(2))
     
+        const newShippingPrice = parseFloat((parseFloat(price) > 100 ? 0 : cartItems.length > 0 ? 5.99 : 0).toFixed(2))
+        setShippingPrice(newShippingPrice.toFixed(2))
+    
+        const newTotalPrice = parseFloat((parseFloat(price) + newTaxPrice + newShippingPrice).toFixed(2))
+        setTotalPrice(newTotalPrice.toFixed(2))
+    }, [price, cartItems])
+
+
     const checkoutHandler = () => {
         if (paymentMethod === "After delivery"){
             try{
@@ -81,21 +123,27 @@ function CheckoutPage() {
                     product_id: product.id,
                     amount: product.qnty
                 }));
-        
-                dispatch(createOrder({orderData, shippingData, orderItemsData, token})).then((resultAction) => {
-                    if (createOrder.fulfilled.match(resultAction)){
-                        localStorage.removeItem("cartItems")
-                        navigate('/all-orders')
-                        window.location.reload();
-                        return
-                    }
-                    else {
-                        setPageError("Error during order creation: " + resultAction.payload);
-                    }
-                    })
-                .catch((e) => {
-                    setPageError("Error during order creation: "+e)
-                });
+                if (token){
+                    dispatch(createOrder({orderData, shippingData, orderItemsData, token})).then((resultAction) => {
+                        if (createOrder.fulfilled.match(resultAction)){
+                            localStorage.removeItem("cartItems")
+                            navigate('/all-orders')
+                            window.location.reload();
+                            return
+                        }
+                        else {
+                            setPageError("Error during order creation: " + resultAction.payload);
+                        }
+                        })
+                    .catch((e) => {
+                        setPageError("Error during order creation: "+e)
+                    });
+                }
+                else{
+                    dispatch(logOut())
+                    navigate('/login')
+                    notifyError("User was unautharized. Authentification required")
+                }
             }
             catch (e) {
                 setPageError("Error during order creation: "+e)
@@ -106,21 +154,6 @@ function CheckoutPage() {
         }
     }
 
-    useEffect(() => {
-        const newPrice = parseFloat(cartItems.reduce((acc, item) => acc + (item.qnty * item.price), 0))
-        setPrice(newPrice.toFixed(2))
-    }, [cartItems])
-
-    useEffect(() => {
-        const newTaxPrice = parseFloat((parseFloat(price) * 0.10).toFixed(2))
-        setTaxPrice(newTaxPrice.toFixed(2))
-    
-        const newShippingPrice = parseFloat((parseFloat(price) > 100 ? 0 : cartItems.length > 0 ? 5.99 : 0).toFixed(2))
-        setShippingPrice(newShippingPrice.toFixed(2))
-    
-        const newTotalPrice = parseFloat((parseFloat(price) + newTaxPrice + newShippingPrice).toFixed(2))
-        setTotalPrice(newTotalPrice.toFixed(2))
-    }, [price, cartItems])
 
     return (
         <div className="d-flex flex-column justify-content-center align-items-center">

@@ -15,7 +15,7 @@ function ProductPage() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const { id } = useParams();
+    const { id } = useParams()
     const [qnty, setQnty] = useState(1); 
     const { productById, loading, error } = useSelector((state) => state.productByIdRed)
     const cartItems = useSelector((state) => state.cartRed.cartItems)
@@ -55,7 +55,7 @@ function ProductPage() {
               !productById ? <p>Product not found</p> :
               (<Row>
                 <Col md={6}>
-                    <Image src={productById.image} alt={productById.name} />
+                    <Image src={`http://127.0.0.1:8000${productById.image}`} alt={productById.name} style={{ maxWidth: "100%", maxHeight: "60%"}}/>
                 </Col>
                 <Col md={4}>
                   <Row>

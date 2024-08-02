@@ -4,9 +4,9 @@ from django.contrib.auth.models import User
 
 class Product(models.Model):
     _id = models.AutoField(primary_key=True, editable=False)
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     name = models.CharField(max_length=150, null=True, blank=True)
-    image = models.ImageField(null=True, blank=True)
+    image = models.ImageField(null=True, blank=True, default="sample.jpg")
     brand = models.CharField(max_length=150, null=True, blank=True)
     category = models.CharField(max_length=150, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
@@ -16,14 +16,19 @@ class Product(models.Model):
     amountStock = models.IntegerField(null=True, blank=True, default=0)
     createdAt = models.DateTimeField(auto_now_add=True)
 
+    # def create(self, *args, **kwargs):
+    #     if not self.image:
+    #         self.image = "/airpods.jpg"
+    #     super().create(*args, **kwargs)
+
     def __str__(self):
         return self.name
     
 
 class Review(models.Model):
     _id = models.AutoField(primary_key=True, editable=False)
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, blank=True)
     name = models.CharField(max_length=150, null=True, blank=True)
     comment = models.TextField(null=True, blank=True)
     rating = models.IntegerField(null=True, blank=True, default=5)
@@ -33,25 +38,25 @@ class Review(models.Model):
         return self.name
     
 class Order(models.Model):
-      _id = models.AutoField(primary_key=True, editable=False)
-      user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-      paymentMethod = models.CharField(max_length=150, null=True, blank=True)
-      taxPrice = models.DecimalField(max_digits=8, decimal_places=2)
-      shippingPrice = models.DecimalField(max_digits=8, decimal_places=2)
-      totalPrice = models.DecimalField(max_digits=8, decimal_places=2)
-      isPaid = models.BooleanField(default=False)
-      paidAt = models.DateField(auto_now_add=False, null=True, blank=True)
-      isDelivered = models.BooleanField(default=False)
-      deliveredAt = models.DateField(auto_now_add=False, null=True, blank=True)
-      createdAt = models.DateField(auto_now_add=True)
+    _id = models.AutoField(primary_key=True, editable=False)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    paymentMethod = models.CharField(max_length=150, null=True, blank=True)
+    taxPrice = models.DecimalField(max_digits=8, decimal_places=2)
+    shippingPrice = models.DecimalField(max_digits=8, decimal_places=2)
+    totalPrice = models.DecimalField(max_digits=8, decimal_places=2)
+    isPaid = models.BooleanField(default=False)
+    paidAt = models.DateField(auto_now_add=False, null=True, blank=True)
+    isDelivered = models.BooleanField(default=False)
+    deliveredAt = models.DateField(auto_now_add=False, null=True, blank=True)
+    createdAt = models.DateField(auto_now_add=True)
 
-      def __str__(self):
-          return str(self.createdAt)
+    def __str__(self):
+        return str(self.createdAt)
       
 class OrderItem(models.Model):
     _id = models.AutoField(primary_key=True, editable=False)  
-    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True)
-    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True, blank=True)
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, blank=True)
     name = models.CharField(max_length=150, null=True, blank=True)
     amount =  models.IntegerField(null=True, blank=True, default=1)
     price = models.DecimalField(max_digits=8, decimal_places=2)

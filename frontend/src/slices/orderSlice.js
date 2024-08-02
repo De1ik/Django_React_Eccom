@@ -79,6 +79,54 @@ export const getOrderById = createAsyncThunk(
     }
 )
 
+export const markDeliveredById = createAsyncThunk(
+    "user/mark-delivered-id",
+    async ({id, token}, { rejectWithValue }) => {
+        try{
+
+            const config = {
+                headers: {
+                    'Content-type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                }
+            }
+
+            const { data } = await axios.get(
+                `/api/admin/order-mark-delivered/${id}`,
+                config
+            )
+            return data;
+        
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || error.message);
+        }
+    }
+)
+
+export const markPaidById = createAsyncThunk(
+    "user/mark-paid-id",
+    async ({id, token}, { rejectWithValue }) => {
+        try{
+
+            const config = {
+                headers: {
+                    'Content-type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                }
+            }
+
+            const { data } = await axios.get(
+                `/api/admin/order-paid-delivered/${id}`,
+                config
+            )
+            return data;
+        
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || error.message);
+        }
+    }
+)
+
 
 const initialState = {
     loading: false,
@@ -134,19 +182,48 @@ const orderSlice = createSlice({
         .addCase(getOrderById.pending, (state) => {
             state.loading = true
             state.error = null
-            console.log("start")
         })
         .addCase(getOrderById.fulfilled, (state, action) => {
             state.loading = false
             state.orderById = action.payload.order
             state.orderItems = action.payload.orderItems
             state.orderShipping = action.payload.orderShipping
-            console.log("good")
         })
         .addCase(getOrderById.rejected, (state, action) => {
             state.loading = false,
             state.error = action.payload
-            console.log("bad")
+        })
+
+
+        .addCase(markDeliveredById.pending, (state) => {
+            state.loading = true
+            state.error = null
+        })
+        .addCase(markDeliveredById.fulfilled, (state, action) => {
+            state.loading = false
+            state.orderById = action.payload.order
+            state.orderItems = action.payload.orderItems
+            state.orderShipping = action.payload.orderShipping
+        })
+        .addCase(markDeliveredById.rejected, (state, action) => {
+            state.loading = false,
+            state.error = action.payload
+        })
+
+
+        .addCase(markPaidById.pending, (state) => {
+            state.loading = true
+            state.error = null
+        })
+        .addCase(markPaidById.fulfilled, (state, action) => {
+            state.loading = false
+            state.orderById = action.payload.order
+            state.orderItems = action.payload.orderItems
+            state.orderShipping = action.payload.orderShipping
+        })
+        .addCase(markPaidById.rejected, (state, action) => {
+            state.loading = false,
+            state.error = action.payload
         })
     }    
 })

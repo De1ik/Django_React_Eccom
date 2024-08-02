@@ -63,7 +63,7 @@ function CartPage() {
                                 <Row>
 
                                     <Col md={2}>
-                                        <Image src={item.image} alt={item.name} fluid rounded/>
+                                        <Image src={`http://127.0.0.1:8000${item.image}`} alt={item.name} style={{ maxWidth: "100%"}} fluid rounded/>
                                     </Col>
 
                                     <Col md={3}>

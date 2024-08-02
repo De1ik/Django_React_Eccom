@@ -1,5 +1,5 @@
 import React from 'react'
-import { Container, Nav, Navbar } from 'react-bootstrap'
+import { Container, Nav, Navbar, NavDropdown } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { logOut } from '../slices/authSlice'
@@ -35,6 +35,38 @@ function Header() {
                         <Nav.Link><i className='fas fa-user'></i>Profile</Nav.Link>
                       </LinkContainer>      
                 </>}
+
+                {userData && userData.is_staff &&
+                  <NavDropdown
+                              id="nav-dropdown-dark-example"
+                              title="Admin"
+                              menuVariant="dark"
+                  >
+                      <LinkContainer to={"/admin/users"}>
+                          <NavDropdown.Item>User</NavDropdown.Item>
+                      </LinkContainer> 
+                      <LinkContainer to={"/admin/orders"}>
+                          <NavDropdown.Item>Orders</NavDropdown.Item>
+                      </LinkContainer> 
+                      <LinkContainer to={"/admin/products"}>
+                          <NavDropdown.Item>Products</NavDropdown.Item>
+                      </LinkContainer> 
+                  </NavDropdown>
+               
+                }
+
+                  {/* <NavDropdown.Item>
+                  <LinkContainer to={"/admin"}>
+                    <Nav.Link><i className='fas fa-user'></i>products</Nav.Link>
+                  </LinkContainer>
+                  </NavDropdown.Item>
+
+                  <NavDropdown.Item>
+                  <LinkContainer to={"/admin"}>
+                    <Nav.Link><i className='fas fa-user'></i>orders</Nav.Link>
+                  </LinkContainer>
+                  </NavDropdown.Item> */}
+
               </Nav>
               </Navbar.Collapse>
           </Container>

@@ -15,9 +15,9 @@ function Order({order}) {
 
       <Col md={2}>{order.isDelivered ? order.deliveredAt : "No"}</Col>
 
-      <Col md={2}>{order.isDelivered ? order.deliveredAt : "No"}</Col>
+      <Col md={2}>{order.isPaid ? order.paidAt : "No"}</Col>
 
-      <Col md={2}><Button onClick={() => (navigate(`/order/${order._id}`))}>Info</Button></Col>
+      <Col md={2}><Button onClick={() => (navigate(`/order/${order._id}`))}>Details</Button></Col>
     </Row>
   )
 }

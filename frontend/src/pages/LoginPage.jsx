@@ -7,18 +7,65 @@ import { loginAction, getUserAction } from '../slices/authSlice'
 import Loader from '../components/Loader';
 import Message from '../components/Message';
 import { Link } from 'react-router-dom'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation  } from 'react-router-dom'
+import { ToastContainer, toast } from 'react-toastify';
 
 
 function LoginPage() {
 
+    const location = useLocation()
     const dispatch = useDispatch()
     const navigate = useNavigate();
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [errorPage, setError] = useState("")
 
+    const [reload, setReload] = useState(false)
+
     const { loading, error, emailAcivated, isAuth } = useSelector((state) => state.authRed)
+
+    const notify = () => toast.success("User login successfully!", {
+        position: "bottom-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+    }
+    );
+
+
+    useEffect(() => {
+        console.log("dsfghjklkjhgfdsadfgh")
+        if (location.pathname === '/login/redirect-auth-required') {
+            if (localStorage.getItem('redirectAuthInfo')){
+                window.location.reload()
+                localStorage.removeItem('redirectAuthInfo')
+            } 
+            else{
+                setReload(true)
+            }
+
+        }
+    }, [])
+
+
+    useEffect(() => {
+        if (reload) { 
+            toast.error('User was unautharized. Authentification required', {
+                position: "bottom-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+            setReload(false)
+        }
+    }, [reload])
+
 
     const loginHandler = (e) => {
         e.preventDefault()

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button, Modal } from 'react-bootstrap'
 
-const LogoutConfirmation = ({ show, handleClose, handleLogout }) => {
+const LogoutConfirmation = ({ show, handleClose, handleLogout, title, }) => {
     return (
       <Modal show={show} onHide={handleClose} centered>
         <Modal.Header closeButton>
