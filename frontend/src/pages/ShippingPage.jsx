@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import OrderSters from '../components/OrderSters'
 import FormContainer from '../components/FormContainer'
 import { Form, Button, Container } from 'react-bootstrap'
-import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import AuthGuard from '../components/AuthGuard'
 
 function ShippingPage() {
 
@@ -33,6 +33,7 @@ function ShippingPage() {
         }
 
   return (
+    <AuthGuard>
     <Container className="d-flex flex-column justify-content-center align-items-center">
         <h1 className='my-4'>Shipping</h1>
         <OrderSters data={{"step1": true}}/>
@@ -92,6 +93,7 @@ function ShippingPage() {
             </Form>  
         </FormContainer>
     </Container>
+    </AuthGuard>
   )
 }
 

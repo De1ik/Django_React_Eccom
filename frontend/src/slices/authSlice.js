@@ -2,9 +2,9 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
 
 
-const userDataFromStorage = JSON.parse(localStorage.getItem("userData")) || null
-const authDataFromStorage = JSON.parse(localStorage.getItem("authData")) || null
-const isAuthFromStorage = JSON.parse(localStorage.getItem("isAuth")) || false
+// const userDataFromStorage = JSON.parse(localStorage.getItem("userData")) || null
+// const authDataFromStorage = JSON.parse(localStorage.getItem("authData")) || null
+// const isAuthFromStorage = JSON.parse(localStorage.getItem("isAuth")) || false
 
 export const loginAction = createAsyncThunk(
     "user/login",
@@ -209,33 +209,53 @@ export const resetPassConfirmAction = createAsyncThunk(
 )
 
 
+const userDataFromStorage = JSON.parse(localStorage.getItem("userData")) || null
+const authDataFromStorage = JSON.parse(localStorage.getItem("authData")) || null
+const isAuthFromStorage = JSON.parse(localStorage.getItem("isAuth")) || false
+
+
+const initialState = {
+    isAuth: isAuthFromStorage,
+    authData: authDataFromStorage,
+    loading: false,
+    error: null,
+    userData: userDataFromStorage,
+    registrateSucces: false,
+    resetPassRequest: false,
+    resetPassSuccess: false,
+    emailAcivated: false,
+    updatedInfo: false,
+};
+
+
+
 const userAuthSlice = createSlice({
     name: "userAuth",
-    initialState: {
-        isAuth: isAuthFromStorage,
-        authData: authDataFromStorage,
-        loading: false,
-        error: null,
-        userData: userDataFromStorage,
-        registrateSucces: false,
-        resetPassRequest: false,
-        resetPassSuccess: false,
-        emailAcivated: false,
-        updatedInfo: false,
-    },
+    initialState,
     reducers: {
         logOut: (state) => {
             // localStorage.removeItem("cartItems")
             // localStorage.removeItem("userData")
             // localStorage.removeItem("isAuth")
             // localStorage.removeItem("authData")
-            localStorage.clear()
-            state.userData = null
-            state.isAuth = false
-            state.registrateSucces = false
-            state.resetPassRequest = false
-            state.emailAcivated = false
-            state.updatedInfo = false
+            localStorage.clear();
+            state.isAuth = false;
+            state.authData = null;
+            state.loading = false;
+            state.error = null;
+            state.userData = "";
+            state.registrateSucces = false;
+            state.resetPassRequest = false;
+            state.resetPassSuccess = false;
+            state.emailAcivated = false;
+            state.updatedInfo = false;
+            // state.userData = null
+            // state.isAuth = false
+            // state.registrateSucces = false
+            // state.resetPassRequest = false
+            // state.emailAcivated = false
+            // state.updatedInfo = false
+            // state.authData = null
         },
         resendPasswordEmail: (state) => {
             state.resetPassRequest = false;
@@ -251,6 +271,7 @@ const userAuthSlice = createSlice({
                 state.loading = false
                 state.authData = action.payload
                 state.resetPassRequest = false
+                console.log(action.payload)
                 localStorage.setItem("authData", JSON.stringify(action.payload))
                 localStorage.setItem("isAuth", JSON.stringify(true))
                 state.isAuth = true

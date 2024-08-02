@@ -85,12 +85,5 @@ class UserProfile(APIView):
     def get(self, request):
         user = request.user
         serializer = UserSerializer(user, many=False)
-        return Response(serializer.data)
-    
-class AllUsers(APIView):
-    permission_classes = [IsAdminUser]
-
-    def get(self, request):
-        users = User.objects.all()
-        serializer = UserSerializer(users, many=True)
-        return Response(serializer.data)    
+        return Response(serializer.data) 
+     

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import 'react-toastify/dist/ReactToastify.css';
 import { Container } from 'react-bootstrap'
 import { BrowserRouter as Router, Route, Routes} from 'react-router-dom'
 import Footer from './components/Footer'
@@ -19,6 +20,15 @@ import PayMethodPage from './pages/PayMethodPage'
 import CheckoutPage from './pages/CheckoutPage'
 import AllOrders from './pages/AllOrders'
 import OrderDetails from './pages/OrderDetails'
+import AllUsers from './pages/AllUsers'
+import { ToastContainer } from 'react-toastify';
+import AdminUserEdit from './pages/AdminUserEdit';
+import AdminAllProducts from './pages/AdminAllProducts';
+import AdminEditProduct from './pages/AdminEditProduct';
+import AdminCreateProduct from './pages/AdminCreateProduct';
+import AdminAllOrders from './pages/AdminAllOrders';
+import AdminOrderEdit from './pages/AdminOrderEdit';
+
 
 
 function App() {
@@ -29,7 +39,7 @@ function App() {
     <Router>
       <Header/>
       <main>
-        <Container>
+        <Container style={{maxWidth: "100%"}}>
           <Routes>
             <Route path="/" element={<HomePage/>} exact />
             <Route path="/product/:id" element={<ProductPage/>} />
@@ -40,10 +50,19 @@ function App() {
             <Route path="/checkout" element={<CheckoutPage/>} />
 
 
-
             <Route path="/login" element={<LoginPage/>} />
+            <Route path="/login/redirect-auth-required" element={<LoginPage/>} />
             <Route path="/registrate" element={<RegistratePage/>} />
             <Route path="/profile" element={<ProfilePage />} />
+
+
+            <Route path="/admin/users" element={<AllUsers />} />
+            <Route path="/admin/user/:id/edit" element={<AdminUserEdit />} />
+            <Route path="/admin/orders" element={<AdminAllOrders />} />
+            <Route path="/admin/order/:id/edit" element={<AdminOrderEdit />} />
+            <Route path="/admin/products" element={<AdminAllProducts />} />
+            <Route path="/admin/create-product" element={<AdminCreateProduct />} />
+            <Route path="/admin/product/:id/edit" element={<AdminEditProduct />} />
 
             {/* <Route element={<NoAuthRoute />}>
               <Route path="/login" element={<LoginPage/>} />
@@ -69,6 +88,7 @@ function App() {
       </main>
       <Footer/>
     </Router>
+    <ToastContainer />
     </>
   )
 }

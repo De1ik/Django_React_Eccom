@@ -5,10 +5,11 @@ import { Link } from 'react-router-dom'
 
 function Product({product}) {
   return (
-    <Card className='my-3 p-3 rounded'>
+    <Card className='my-3 p-3 rounded' style={{ maxWidth: "100%", minHeight: "400px", maxHeight: "400px"}}>
 
         <Link to={`/product/${product._id}`}>
-            <Card.Img src={product.image} />
+            <Card.Img src={`http://127.0.0.1:8000${product.image}`} alt={product.name} style={{ maxWidth: "100%", minHeight: "200px", maxHeight: "200px"}} />
+            {/* {console.log(`${process.env.REACT_APP_API_URL}`)} */}
         </Link>
 
         <Card.Body>

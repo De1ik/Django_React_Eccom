@@ -8,6 +8,7 @@ import Message from '../components/Message'
 import Loader from '../components/Loader'
 import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
+import { ToastContainer, toast } from 'react-toastify';
 
 
 function EmailActivate() {
@@ -17,12 +18,24 @@ function EmailActivate() {
     const [errorMess, setError] = useState("")
     const { loading, error, emailAcivated} = useSelector((state) => state.authRed)
 
+    const notify = () => toast.success("User was registrated! Now please login", {
+        position: "bottom-right",
+        autoClose: 7000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+    }
+    );
+
     const emailActivator = (e) => {
         try{
             e.preventDefault()
             dispatch(activatorAction({ uid, token })).then((resultAction) => {
                 if (activatorAction.fulfilled.match(resultAction)) {
                     navigate("/login");
+                    notify()
                 } else {
                     setError(resultAction.payload);
                 }
@@ -44,6 +57,7 @@ function EmailActivate() {
                 <p className="text-center"><Button onClick={emailActivator}>Activate Account</Button></p>
             </>
         }
+        <ToastContainer />
     </div>
   )
 }

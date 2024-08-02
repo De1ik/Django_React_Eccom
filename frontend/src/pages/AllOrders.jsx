@@ -35,8 +35,8 @@ function AllOrders() {
                     <Col md={1}><strong>ID</strong></Col>
                     <Col md={3}><strong>Date</strong></Col>
                     <Col md={2}><strong>Price</strong></Col>
-                    <Col md={2}><strong>Status</strong></Col>
-                    <Col md={2}><strong>Delivery</strong></Col>
+                    <Col md={2}><strong>Delivered</strong></Col>
+                    <Col md={2}><strong>Paid</strong></Col>
                     <Col md={2}><strong></strong></Col>
                   </ListGroup.Item>  
 
