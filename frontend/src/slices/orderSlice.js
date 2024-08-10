@@ -33,6 +33,31 @@ export const createOrder = createAsyncThunk(
 
 export const getAllOrder = createAsyncThunk(
     "user/get-all-orders",
+    async ({pageUrl, token, searchKeyword}, { rejectWithValue }) => {
+        try{
+
+            const config = {
+                headers: {
+                    'Content-type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                }
+            }
+
+            const { data } = await axios.get(
+                `/api/order/all-orders?${searchKeyword}page=${pageUrl}`,
+                config
+            )
+            return data;
+        
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || error.message);
+        }
+    }
+)
+
+
+export const getLatestOrders = createAsyncThunk(
+    "user/latest_orders",
     async (token, { rejectWithValue }) => {
         try{
 
@@ -44,7 +69,7 @@ export const getAllOrder = createAsyncThunk(
             }
 
             const { data } = await axios.get(
-                "/api/order/all-orders",
+                `/api/order/latest-orders`,
                 config
             )
             return data;
@@ -54,6 +79,7 @@ export const getAllOrder = createAsyncThunk(
         }
     }
 )
+
 
 export const getOrderById = createAsyncThunk(
     "user/get-order-id",
@@ -131,10 +157,13 @@ export const markPaidById = createAsyncThunk(
 const initialState = {
     loading: false,
     error: null,
-    allOrders: allOrdersStorage,
+    allOrders: [],
     orderById: {},
     orderItems: [],
-    orderShipping: {}
+    orderShipping: {},
+    latestOrders: [],
+    page: 1,
+    pages: 1,
 }
 
 const orderSlice = createSlice({
@@ -149,8 +178,6 @@ const orderSlice = createSlice({
         })
         .addCase(createOrder.fulfilled, (state, action) => {
             state.loading = false
-            // state.allOrders.push(action.payload)
-            // localStorage.setItem("allOrders", JSON.stringify(state.allOrders))
         })
         .addCase(createOrder.rejected, (state, action) => {
             state.loading = false,
@@ -167,10 +194,29 @@ const orderSlice = createSlice({
         })
         .addCase(getAllOrder.fulfilled, (state, action) => {
             state.loading = false
-            state.allOrders = action.payload
+            state.allOrders = action.payload.orders
+            state.page = action.payload.page;
+            state.pages = action.payload.pages;
             localStorage.setItem("allOrders", JSON.stringify(action.payload))
         })
         .addCase(getAllOrder.rejected, (state, action) => {
+            state.loading = false,
+            state.error = action.payload
+        })
+
+
+
+        .addCase(getLatestOrders.pending, (state) => {
+            state.loading = true
+            state.error = null
+
+        })
+        .addCase(getLatestOrders.fulfilled, (state, action) => {
+            state.error = null
+            state.loading = false
+            state.latestOrders = action.payload;
+        })
+        .addCase(getLatestOrders.rejected, (state, action) => {
             state.loading = false,
             state.error = action.payload
         })

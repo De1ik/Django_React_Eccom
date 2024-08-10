@@ -9,6 +9,8 @@ from rest_framework.authentication import TokenAuthentication
 
 from datetime import datetime
 
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 
 
 class CreateOrder(APIView):
@@ -62,26 +64,62 @@ class CreateOrder(APIView):
         }
 
         return Response(response_data, status=status.HTTP_201_CREATED)
-    
+
+
 
 class GetAllOrders(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         try:
+            page = request.query_params.get('page')
+            search = request.query_params.get('search', "")
+            keyword = request.query_params.get('keyword', 0)
+
             user = request.user
 
-            if (user.is_staff):
-                all_orders = Order.objects.all()
+            if search == "id":
+                all_orders = Order.objects.filter(_id=keyword, user=user).order_by('-createdAt')
             else:
-                all_orders = Order.objects.filter(user=user)
+                all_orders = Order.objects.filter(user=user).order_by('-createdAt')
+            
+            paginator = Paginator(all_orders, 10)
 
-            order_serializer = OrderSerializer(all_orders, many=True)
-            return Response(order_serializer.data, status=status.HTTP_200_OK)
-        except:
-            return Response({"detail": "Some error appear when you try to see all orders"}, status=status.HTTP_400_BAD_REQUEST)
+            if not page:
+                page = 1
 
-    
+            try:
+                all_orders = paginator.page(page)
+            except PageNotAnInteger:
+                all_orders = paginator.page(1)
+            except EmptyPage:
+                all_orders = paginator.page(paginator.num_pages)    
+
+            page = int(page)   
+
+            serializer = OrderSerializer(all_orders, many=True)
+            return Response({"orders": serializer.data, "page": page, "pages": paginator.num_pages})
+        except Exception as e:
+            return Response({"detail": f"Some error appeared: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GetLatestOrders(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        try:
+
+
+            user = request.user
+            all_orders = Order.objects.filter(user=user).order_by('-createdAt')[0:3]
+            
+
+            serializer = OrderSerializer(all_orders, many=True)
+            return Response(serializer.data)
+        except Exception as e:
+            return Response({"detail": f"Some error appeared: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 class GetSpecificOrder(APIView):
     permission_classes = [IsAuthenticated]

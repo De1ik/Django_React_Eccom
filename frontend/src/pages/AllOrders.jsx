@@ -7,48 +7,94 @@ import Message from '../components/Message'
 import { useState, useEffect } from 'react'
 import Loader from '../components/Loader'
 import Order from '../components/Order'
+import { toast } from 'react-toastify'
+import { useLocation } from 'react-router-dom'
+import SearchAdmin from '../components/SearchAdmin'
+import AuthGuard from '../components/AuthGuard'
+import Paginate from '../components/Paginate'
+import { logOut } from '../slices/authSlice'
 
 
 
 function AllOrders() {
+  const notify = (message) => toast.success(message, {
+    position: "bottom-right",
+    autoClose: 3000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+}
+)
+
+const notifyError = (message) => toast.error(message, {
+    position: "bottom-right",
+    autoClose: 3000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+}
+)
+
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { allOrders, loading, error} = useSelector((state) => state.orderRed)
-    const token = useSelector((state) => state.authRed.authData.access)
+    const location = useLocation()
+
+    const queryParams = new URLSearchParams(location.search);
+    const pageUrl = queryParams.get('page') || 1
+    const search = queryParams.get('search') || ""
+    const keyword = queryParams.get('keyword') || ""
+
+    const [token, setToken] = useState("")
+
+    const authRed = useSelector((state) => state.authRed)
+    const { allOrders, loading, error, page, pages} = useSelector((state) => state.orderRed)
+
+    useEffect(() => {
+      if (error && error.includes("401")){
+          dispatch(logOut())
+          localStorage.setItem('redirectAuthInfo', 'true');
+          navigate("/login/redirect-auth-required");
+      }
+    }, [error])
+
+    useEffect(() => {
+        if (authRed.authData){
+            setToken(authRed.authData.access)
+        }
+    }, [])
+
 
 
     useEffect(() => {
-      dispatch(getAllOrder(token))
-    }, [dispatch])
+      if (token){
+          let searchKeyword = ""
+          if (keyword){
+              searchKeyword = `search=${search}&keyword=${keyword}&`}
+          dispatch(getAllOrder({token, pageUrl, searchKeyword}))
+      }
+  }, [token, pageUrl, keyword])
 
 
   return (
-    <div>
-      <h1 className='text-center my-4'>{}My Orders</h1>
+    <AuthGuard>
+      <h1 className='text-center my-3'>My Orders</h1>
+      <SearchAdmin path="all-orders" />
+      <div className='my-3 list-group-custom'>
             {
                 loading ? <Loader/> :
                 error ? <Message type="danger">{error}</Message> :
 
-                <ListGroup variant='flush'>
-
-                  <ListGroup.Item className="d-flex">
-                    <Col md={1}><strong>ID</strong></Col>
-                    <Col md={3}><strong>Date</strong></Col>
-                    <Col md={2}><strong>Price</strong></Col>
-                    <Col md={2}><strong>Delivered</strong></Col>
-                    <Col md={2}><strong>Paid</strong></Col>
-                    <Col md={2}><strong></strong></Col>
-                  </ListGroup.Item>  
-
-                  {allOrders.map(order => (
-                    <ListGroup.Item key={order._id} sm={12} md={12} lg={12} xl={12}>
-                      <Order order={order}/>
-                    </ListGroup.Item>
-                  ))}
-
-                </ListGroup>
+                <Order orders={allOrders}/>
             }
-    </div>
+            {allOrders.length === 0 && <h3 className='text-center my-3'>Order was not Found</h3>}
+      </div>      
+      <Paginate page={page} pages={pages} keyword={``} pathname="" />
+    </AuthGuard>
   )
 }
 

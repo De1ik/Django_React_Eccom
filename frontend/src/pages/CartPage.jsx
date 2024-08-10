@@ -50,9 +50,9 @@ function CartPage() {
 
     return (
         <div>
-            <h1>Cart Shopping</h1>
+            <h1 className='mt-3 text-center'>Cart Shopping</h1>
             <Row>
-                <Col md={8}>
+                <Col md={8} className='my-3'>
                 {cartItems.length == 0 ? 
                     <Message variant="info">You have nothing in you cart. <Link to="/">Start buy</Link></Message>
                     : 
@@ -93,7 +93,7 @@ function CartPage() {
                 }
                 </Col>
 
-                <Col md={4}>
+                <Col md={4} className='my-3'>
                     <Card>
                         <ListGroup>
                             <ListGroup.Item>
