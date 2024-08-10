@@ -8,6 +8,9 @@ import { useNavigate } from 'react-router-dom'
 import { logOut } from '../slices/authSlice'
 import AuthGuard from '../components/AuthGuard'
 import { adminGetAllProducts, deleteProduct } from '../slices/adminSlice'
+import { useLocation } from 'react-router-dom'
+import Paginate from '../components/Paginate.jsx'
+import SearchAdmin from '../components/SearchAdmin.jsx'
 
 function AdminAllProducts() {
 
@@ -35,15 +38,23 @@ function AdminAllProducts() {
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const location = useLocation()
+
+    const queryParams = new URLSearchParams(location.search);
+    const pageUrl = queryParams.get('page') || 1
+    const search = queryParams.get('search') || ""
+    const keyword = queryParams.get('keyword') || ""
+
+    const [searchKeyword, setSeacrhKeyword] = useState("")
+
     const [token, setToken] = useState("")
-    // const [userId, setUserId] = useState("")
     const [productDelete, setProductDelete] = useState("")
     const [showModal, setShowModal] = useState(false)
 
     const [deleteError, setDeleteError] = useState(false)
 
     const authRed = useSelector((state) => state.authRed)
-    const { loading, error, allProductsList, deletedSuccess} = useSelector((state) => state.adminRed)
+    const { loading, error, allProductsList, deletedSuccess, page, pages} = useSelector((state) => state.adminRed)
 
     const handleClose = () => {
         setProductDelete("")
@@ -57,31 +68,36 @@ function AdminAllProducts() {
 
     useEffect(() => {
         if (error && error.includes("401")){
-            notify(token)
-            notifyError(error)
-            // dispatch(logOut())
-            // localStorage.setItem('redirectAuthInfo', 'true');
-            // navigate("/login/redirect-auth-required");
+            dispatch(logOut())
+            localStorage.setItem('redirectAuthInfo', 'true');
+            navigate("/login/redirect-auth-required");
         }
     }, [error])
 
     useEffect(() => {
         if (authRed.authData){
             setToken(authRed.authData.access)
-            // setUserId(authRed.userData.id)
         }
     }, [])
 
     useEffect(() => {
+        if (keyword){
+            setSeacrhKeyword(`search=${search}&keyword=${keyword}&`)}
+        else{
+            setSeacrhKeyword("")
+        }    
+    }, [keyword])
+
+    useEffect(() => {
         if (token){
-            dispatch(adminGetAllProducts(token))
+            dispatch(adminGetAllProducts({token, pageUrl, searchKeyword}))
         }
-    }, [token])
+    }, [token, pageUrl, searchKeyword])
 
 
     useEffect(() => {
-        if (deletedSuccess){
-            dispatch(adminGetAllProducts(token))
+        if (deletedSuccess && token){
+            dispatch(adminGetAllProducts({token, pageUrl, searchKeyword}))
         }
     }, [dispatch, deletedSuccess])
 
@@ -96,6 +112,7 @@ function AdminAllProducts() {
             dispatch(deleteProduct({token, id})).then((resultAction) => {
                 if (deleteProduct.fulfilled.match(resultAction)){
                     notify("Product deleted successfully!")
+
                     return
                 }
                 else {
@@ -122,47 +139,55 @@ function AdminAllProducts() {
     console.log(allProductsList)
 
 
+
     return (
         <AuthGuard error={error}>
         <div className='d-flex flex-column justify-content-center align-items-center'>
-          <div >
+          <div className='w-100'>
             <Row className='my-4 my-4 d-flex justify-content-between'>
-                <Col >
+                <Col md={3} xs="auto">
                     <h1>List off All Products</h1>
                 </Col>
-                <Col className='d-flex justify-content-end'>
-                    <Button onClick={() => navigate("/admin/create-product")}>Create Product</Button>
+                <Col className="d-flex flex-column justify-content-center align-items-center">
+                    <SearchAdmin admin="products"/>
+                </Col>
+
+                <Col className='d-flex justify-content-end' xs="auto">
+                    <Button style={{maxHeight: "100px"}} onClick={() => navigate("/admin/create-product")}>Create Product</Button>
                 </Col>
             </Row>
-            <table className='text-left styled-table'>
-            <thead>
-                <tr>
-                    <th>Id</th>
-                    <th>Name</th>
-                    <th>Category</th>
-                    <th>amountStock</th>
-                    <th>createdAt</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {allProductsList.map((product) => (
-                    <tr key={product._id} className='active-row'>
-                        <td>{product._id}</td>
-                        <td>{product.name}</td>
-                        <td>{product.category}</td>
-                        <td>{product.amountStock}</td>
-                        <td>{product.createdAt}</td>
-                        <td>
-                            <Row>
-                                <Col><Button variant="dark" onClick={() => userEditHandle(product._id)}>Edit</Button></Col>
-                                <Col><Button variant="danger" onClick={() => handleShow(product)}>Delete</Button></Col>
-                            </Row>
-                        </td>
+            <Row>
+                <table className='text-left styled-table'>
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>amountStock</th>
+                        <th>createdAt</th>
+                        <th>Actions</th>
                     </tr>
-                ))}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {allProductsList.map((product) => (
+                        <tr key={product._id} className='active-row'>
+                            <td>{product._id}</td>
+                            <td>{product.name}</td>
+                            <td>{product.category}</td>
+                            <td>{product.amountStock}</td>
+                            <td>{product.createdAt}</td>
+                            <td>
+                                <Row>
+                                    <Col><Button variant="dark" onClick={() => userEditHandle(product._id)}>Edit</Button></Col>
+                                    <Col><Button variant="danger" onClick={() => handleShow(product)}>Delete</Button></Col>
+                                </Row>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+                </table>
+                {allProductsList.length === 0 && <h3 className='text-center'>Produst was not Found</h3>}
+            </Row>
         </div>
         <Confirmation
             show={showModal}
@@ -172,6 +197,7 @@ function AdminAllProducts() {
             confirmQuestion={`Are you sure want to delete ${productDelete.name}?`}
         />
         </div>
+        <Paginate page={page} pages={pages} keyword={searchKeyword} pathname="" />
         </AuthGuard>
       )
 }

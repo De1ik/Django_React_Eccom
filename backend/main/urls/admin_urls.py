@@ -1,6 +1,5 @@
 from django.urls import path
 from main.views.admin_views import *
-from main.views.order_views import GetAllOrders as AdminAllOrders
 from main.views.order_views import GetSpecificOrder as AdminGetOrder
 
 
@@ -17,8 +16,8 @@ urlpatterns = [
     path("/update-product/<int:id>", AdminUpdateProductInfo.as_view(), name="update_product"),
     path("/delete-product/<int:id>", AdminDeleteProduct.as_view(), name="delete_product"),
 
-    path("/all-orders", AdminAllOrders.as_view(), name="all_orders"),
+    path("/all-orders", AdminGetAllOrders.as_view(), name="all_orders"),
     path("/get-order/<int:id>", AdminGetOrder.as_view(), name="get_product"),
     path("/order-mark-delivered/<int:id>", MarkDeliveredOrder.as_view(), name="mark_delivered"),
-        path("/order-paid-delivered/<int:id>", MarkPaidOrder.as_view(), name="mark_delivered"),
+    path("/order-paid-delivered/<int:id>", MarkPaidOrder.as_view(), name="mark_delivered"),
 ]

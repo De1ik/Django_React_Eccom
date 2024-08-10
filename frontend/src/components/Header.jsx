@@ -1,30 +1,38 @@
 import React from 'react'
-import { Container, Nav, Navbar, NavDropdown } from 'react-bootstrap'
+import { Container, Nav, Navbar, NavDropdown, Row, Col } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { logOut } from '../slices/authSlice'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
+import SearchBox from './SearchBox'
+import { useMediaQuery } from 'react-responsive';
 
 function Header() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { userData } = useSelector((state) => state.authRed)
 
+  const isDesktopOrLaptop = useMediaQuery({ query: '(min-width: 768px)' });
+
 
   return (
+
     <header>
-      <Navbar bg="dark" variant='dark' expand="lg" collapseOnSelect className='py-4'>
-          <Container>
-              <LinkContainer to={"/"}>
-                <Navbar.Brand>TeddyShop</Navbar.Brand>
-              </LinkContainer>
-              <Navbar.Toggle aria-controls="basic-navbar-nav" />
-              <Navbar.Collapse id="basic-navbar-nav">
-              <Nav className="mr-auto">
-                <LinkContainer to={"/cart"}>
-                  <Nav.Link><i className='fas fa-shopping-cart'></i>Cart</Nav.Link>
-                </LinkContainer> 
+      <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect className="py-4">
+        <Container>
+          <LinkContainer to={"/"}>
+            <Navbar.Brand>TeddyShop</Navbar.Brand>
+          </LinkContainer>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="ml-auto mr-auto d-flex align-items-center w-100">
+              <div className="mx-auto search-container">
+                {isDesktopOrLaptop && <SearchBox />}
+              </div>
+                  <LinkContainer to={"/cart"}>
+                    <Nav.Link><i className='fas fa-shopping-cart'></i>Cart</Nav.Link>
+                  </LinkContainer> 
 
                 {!userData ? 
                   <LinkContainer to={"/login"}>

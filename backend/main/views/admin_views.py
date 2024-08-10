@@ -15,6 +15,8 @@ from django.db import IntegrityError
 
 from datetime import datetime
 
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 
 
 
@@ -22,9 +24,39 @@ class AdminAllUsers(APIView):
     permission_classes = [IsAdminUser]
 
     def get(self, request):
-        users = User.objects.all()
+
+        page =  request.query_params.get('page')
+        search = request.query_params.get('search', "")
+
+        if (search == "id"):
+            id = request.query_params.get('keyword', 0)
+            users = User.objects.filter(id=id).order_by('date_joined')
+        elif (search == "name") :
+            name = request.query_params.get('keyword', "")
+            users = User.objects.filter(first_name__icontains=name).order_by('date_joined')
+        elif (search == "email") :
+            email = request.query_params.get('keyword', "")
+            users = User.objects.filter(email__icontains=email).order_by('date_joined')
+        else:    
+            users = User.objects.all().order_by('date_joined')
+        
+        paginator = Paginator(users, 10)
+
+        try:
+            users = paginator.page(page)
+        except PageNotAnInteger:
+            users = paginator.page(1)
+        except EmptyPage:
+            users = paginator.page(paginator.num_pages)    
+
+        if (not page):
+            page = 1
+
+        page = int(page)   
+
+        
         serializer = UserSerializer(users, many=True)
-        return Response(serializer.data)  
+        return Response({"users": serializer.data, "page": page, "pages": paginator.num_pages})  
     
 
 class AdminGetUser(APIView):
@@ -82,9 +114,39 @@ class AdminAllProducts(APIView):
     permission_classes = [IsAdminUser]
 
     def get(self, request):
-        product = Product.objects.all()
-        serializer = ProductSerializer(product, many=True)
-        return Response(serializer.data)  
+
+        page =  request.query_params.get('page')
+        search =  request.query_params.get('search', "")
+
+        if (search == "id"):
+            id = request.query_params.get('keyword', 0)
+            products = Product.objects.filter(_id=id).order_by('-createdAt')
+        elif (search == "name") :
+            name = request.query_params.get('keyword', "")
+            products = Product.objects.filter(name__icontains=name).order_by('-createdAt')
+        elif (search == "category") :
+            category = request.query_params.get('keyword', "")
+            products = Product.objects.filter(category__icontains=category).order_by('-createdAt')
+        else:    
+            products = Product.objects.all().order_by('-createdAt')
+        
+        paginator = Paginator(products, 10)
+
+        try:
+            products = paginator.page(page)
+        except PageNotAnInteger:
+            products = paginator.page(1)
+        except EmptyPage:
+            products = paginator.page(paginator.num_pages)    
+
+        if (not page):
+            page = 1
+
+        page = int(page)   
+
+        
+        serializer = ProductSerializer(products, many=True)
+        return Response({"products": serializer.data, "page": page, "pages": paginator.num_pages})  
     
 
 class AdminGetProduct(APIView):
@@ -168,6 +230,42 @@ class AdminDeleteProduct(APIView):
             return Response({"Error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+class AdminGetAllOrders(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        try:
+            page = request.query_params.get('page')
+            search = request.query_params.get('search', "")
+            keyword = request.query_params.get('keyword', 0)
+
+            user = request.user
+
+            if search == "id":
+                all_orders = Order.objects.filter(_id=keyword).order_by('-createdAt')
+            else:
+                all_orders = Order.objects.all().order_by('-createdAt')
+            
+            paginator = Paginator(all_orders, 10)
+
+            if not page:
+                page = 1
+
+            try:
+                all_orders = paginator.page(page)
+            except PageNotAnInteger:
+                all_orders = paginator.page(1)
+            except EmptyPage:
+                all_orders = paginator.page(paginator.num_pages)    
+
+            page = int(page)   
+
+            serializer = OrderSerializer(all_orders, many=True)
+            return Response({"orders": serializer.data, "page": page, "pages": paginator.num_pages})
+        except Exception as e:
+            return Response({"detail": f"Some error appeared: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 class MarkDeliveredOrder(APIView):
     permission_classes = [IsAuthenticated]
@@ -226,7 +324,7 @@ class MarkPaidOrder(APIView):
             return Response({"detail": "You are not allowed to see this order"}, status=status.HTTP_403_FORBIDDEN)
 
         order.isPaid = True
-        order.paidAt = datetime.now().date()  # Использование date() для получения только даты
+        order.paidAt = datetime.now().date() 
         order.save()
 
         order_serializer = OrderSerializer(order, many=False)

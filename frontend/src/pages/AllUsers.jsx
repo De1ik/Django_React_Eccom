@@ -8,6 +8,9 @@ import Confirmation from '../components/Confirmation'
 import { useNavigate } from 'react-router-dom'
 import { logOut } from '../slices/authSlice'
 import AuthGuard from '../components/AuthGuard'
+import SearchAdmin from '../components/SearchAdmin'
+import { useLocation } from 'react-router-dom'
+import Paginate from '../components/Paginate'
 
 
 function AllUsers() {
@@ -36,6 +39,16 @@ function AllUsers() {
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const location = useLocation()
+
+    const queryParams = new URLSearchParams(location.search);
+    const pageUrl = queryParams.get('page') || 1
+    const search = queryParams.get('search') || ""
+    const keyword = queryParams.get('keyword') || ""
+
+    const [searchKeyword, setSeacrhKeyword] = useState("")
+
+
     const [token, setToken] = useState("")
     const [userId, setUserId] = useState("")
     const [userDelete, setUserDelete] = useState("")
@@ -44,7 +57,7 @@ function AllUsers() {
     const [deleteError, setDeleteError] = useState(false)
 
     const authRed = useSelector((state) => state.authRed)
-    const { loading, error, allUsersList, deletedSuccess} = useSelector((state) => state.adminRed)
+    const { loading, error, allUsersList, deletedSuccess, page, pages } = useSelector((state) => state.adminRed)
 
     const handleClose = () => {
         setUserDelete("")
@@ -72,15 +85,23 @@ function AllUsers() {
     }, [])
 
     useEffect(() => {
+        if (keyword){
+            setSeacrhKeyword(`search=${search}&keyword=${keyword}&`)}
+        else{
+            setSeacrhKeyword("")
+        }    
+    }, [keyword])
+
+    useEffect(() => {
         if (token){
-            dispatch(getAllUsers(token))
+            dispatch(getAllUsers({token, pageUrl, searchKeyword}))
         }
-    }, [token])
+    }, [token, pageUrl, searchKeyword])
 
 
     useEffect(() => {
-        if (deletedSuccess){
-            dispatch(getAllUsers(token))
+        if (deletedSuccess && token){
+            dispatch(getAllUsers({token, pageUrl, searchKeyword}))
         }
     }, [dispatch, deletedSuccess])
 
@@ -124,6 +145,7 @@ function AllUsers() {
     <div className='d-flex flex-column justify-content-center align-items-center'>
       <h1 className='my-4'>List off All Users</h1>
       <div >
+      <SearchAdmin admin="users"/>
       <table className='text-left styled-table'>
         <thead>
             <tr>
@@ -160,6 +182,7 @@ function AllUsers() {
             ))}
         </tbody>
     </table>
+    {allUsersList.length === 0 && <h3 className='text-center'>User was not Found</h3>}
     </div>
     <Confirmation
         show={showModal}
@@ -169,6 +192,7 @@ function AllUsers() {
         confirmQuestion="Are you sure want to delete this user?"
     />
     </div>
+    <Paginate page={page} pages={pages} keyword={searchKeyword} pathname="" />
     </AuthGuard>
   )
 }

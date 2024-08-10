@@ -1,13 +1,16 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
-import { getAllOrder } from '../slices/orderSlice'
 import { Table, Button, Row, Col } from 'react-bootstrap'
 import { toast } from 'react-toastify'
 import Confirmation from '../components/Confirmation'
 import { useNavigate } from 'react-router-dom'
 import { logOut } from '../slices/authSlice'
 import AuthGuard from '../components/AuthGuard'
+import SearchAdmin from '../components/SearchAdmin'
+import Paginate from '../components/Paginate'
+import { useLocation } from 'react-router-dom'
+import { adminGetAllOrders } from '../slices/adminSlice'
 
 
 function AdminAllOrders() {
@@ -36,6 +39,15 @@ function AdminAllOrders() {
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const location = useLocation()
+
+    const [searchKeyword, setSeacrhKeyword] = useState("")
+
+    const queryParams = new URLSearchParams(location.search);
+    const pageUrl = queryParams.get('page') || 1
+    const search = queryParams.get('search') || ""
+    const keyword = queryParams.get('keyword') || ""
+
     const [token, setToken] = useState("")
     const [userId, setUserId] = useState("")
     const [userDelete, setUserDelete] = useState("")
@@ -44,7 +56,7 @@ function AdminAllOrders() {
     const [deleteError, setDeleteError] = useState(false)
 
     const authRed = useSelector((state) => state.authRed)
-    const { allOrders, loading, error} = useSelector((state) => state.orderRed)
+    const { loading, error, allOrdersList, page, pages} = useSelector((state) => state.adminRed)
 
     const handleClose = () => {
         setUserDelete("")
@@ -71,10 +83,18 @@ function AdminAllOrders() {
     }, [])
 
     useEffect(() => {
+        if (keyword){
+            setSeacrhKeyword(`search=${search}&keyword=${keyword}&`)}
+        else{
+            setSeacrhKeyword("")
+        }    
+    }, [keyword])
+
+    useEffect(() => {
         if (token){
-            dispatch(getAllOrder(token))
+            dispatch(adminGetAllOrders({token, pageUrl, searchKeyword}))
         }
-    }, [token])
+    }, [token, pageUrl, searchKeyword])
 
 
     // useEffect(() => {
@@ -122,6 +142,7 @@ function AdminAllOrders() {
     <AuthGuard error={error}>
     <div className='d-flex flex-column justify-content-center align-items-center'>
       <h1 className='my-4'>List off All Orders</h1>
+      <SearchAdmin admin="orders"/>
       <div >
       <table className='text-left styled-table'>
         <thead>
@@ -135,7 +156,7 @@ function AdminAllOrders() {
             </tr>
         </thead>
         <tbody>
-            {allOrders.map((order) => (
+            {allOrdersList.map((order) => (
                 <tr key={order._id} className='active-row'>
                     {console.log(order)}
                     <td>{order._id}</td>
@@ -162,6 +183,7 @@ function AdminAllOrders() {
             ))}
         </tbody>
     </table>
+    {allOrdersList.length === 0 && <h3 className='text-center'>Order was not Found</h3>}
     </div>
     {/* <Confirmation
         show={showModal}
@@ -171,6 +193,7 @@ function AdminAllOrders() {
         confirmQuestion="Are you sure want to delete this user?"
     /> */}
     </div>
+    <Paginate page={page} pages={pages} keyword={searchKeyword} pathname="" />
     </AuthGuard>
   )
 }

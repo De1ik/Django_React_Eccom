@@ -20,7 +20,7 @@ function Rating({values, amount, color}) {
   return (
     <>
     <div className='ratingStars'>
-        <span>{stars()} {amount} reviews</span>
+        <span>{stars()} ({amount})</span>
     </div>
     </>
   )

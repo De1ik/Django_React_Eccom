@@ -3,7 +3,7 @@ import axios from 'axios';
 
 export const getAllUsers = createAsyncThunk(
   'admin/all-user',
-  async (token, { rejectWithValue }) => {
+  async ({pageUrl, token, searchKeyword}, { rejectWithValue }) => {
     try {
         const config = {
             headers: {
@@ -11,7 +11,7 @@ export const getAllUsers = createAsyncThunk(
                 'Authorization': `Bearer ${token}`,
             }
         }
-      const { data } = await axios.get(`/api/admin/all-users`, config);
+      const { data } = await axios.get(`/api/admin/all-users?${searchKeyword}page=${pageUrl}`, config);
       return data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || error.message);
@@ -99,7 +99,7 @@ export const updateUser = createAsyncThunk(
 
 export const adminGetAllProducts = createAsyncThunk(
     'admin/all-products',
-    async (token, { rejectWithValue }) => {
+    async ({pageUrl, token, searchKeyword}, { rejectWithValue }) => {
       try {
           const config = {
               headers: {
@@ -107,7 +107,7 @@ export const adminGetAllProducts = createAsyncThunk(
                   'Authorization': `Bearer ${token}`,
               }
           }
-        const { data } = await axios.get(`/api/admin/all-products`, config);
+        const { data } = await axios.get(`/api/admin/all-products?${searchKeyword}page=${pageUrl}`, config);
         return data;
       } catch (error) {
         return rejectWithValue(error.response?.data?.message || error.message);
@@ -170,6 +170,30 @@ export const createProduct = createAsyncThunk(
     }
   );  
 
+export const adminGetAllOrders = createAsyncThunk(
+    "admin/get-all-orders",
+    async ({pageUrl, token, searchKeyword}, { rejectWithValue }) => {
+        try{
+
+            const config = {
+                headers: {
+                    'Content-type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                }
+            }
+
+            const { data } = await axios.get(
+                `/api/admin/all-orders?${searchKeyword}page=${pageUrl}`,
+                config
+            )
+            return data;
+        
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || error.message);
+        }
+    }
+)
+
 
 
 
@@ -184,6 +208,7 @@ const adminSlice = createSlice({
   initialState: {
     loading: false,
     allUsersList: [],
+    allOrdersList: [],
     allProductsList: [],
     error: null,
     deletedSuccess: null,
@@ -191,6 +216,8 @@ const adminSlice = createSlice({
     getByIdSucces: false,
     userById: null,
     productById: null,
+    page: 1,
+    pages: 1,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -200,7 +227,9 @@ const adminSlice = createSlice({
         state.error = null;
       })
       .addCase(getAllUsers.fulfilled, (state, action) => {
-        state.allUsersList = action.payload;
+        state.allUsersList = action.payload.users;
+        state.page = action.payload.page;
+        state.pages = action.payload.pages;
         state.loading = false;
       })
       .addCase(getAllUsers.rejected, (state, action) => {
@@ -259,7 +288,9 @@ const adminSlice = createSlice({
       })
       .addCase(adminGetAllProducts.fulfilled, (state, action) => {
         state.loading = false;
-        state.allProductsList = action.payload
+        state.allProductsList = action.payload.products
+        state.page = action.payload.page;
+        state.pages = action.payload.pages;
       })
       .addCase(adminGetAllProducts.rejected, (state, action) => {
         state.loading = false;
@@ -317,6 +348,23 @@ const adminSlice = createSlice({
         state.loading = false;
       })
       .addCase(createProduct.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+
+
+      .addCase(adminGetAllOrders.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(adminGetAllOrders.fulfilled, (state, action) => {
+        state.loading = false;
+        state.allOrdersList = action.payload.orders
+        state.page = action.payload.page;
+        state.pages = action.payload.pages;
+      })
+      .addCase(adminGetAllOrders.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })

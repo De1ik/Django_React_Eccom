@@ -39,7 +39,7 @@ function OrderDetails() {
 
   return (
     <div className="d-flex flex-column justify-content-center align-items-center">
-       <h1 className='text-center my-4'>Order Details {orderById.createdAt}</h1>
+       <h1 className='text-center my-3'>Order Details {orderById.createdAt}</h1>
 
       
        {error && <Message type="danger">{error}</Message>}

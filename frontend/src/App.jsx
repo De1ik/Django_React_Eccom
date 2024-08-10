@@ -39,9 +39,10 @@ function App() {
     <Router>
       <Header/>
       <main>
-        <Container style={{maxWidth: "100%"}}>
+        <Container style={{maxWidth: "80%"}}>
           <Routes>
             <Route path="/" element={<HomePage/>} exact />
+            <Route path="/products" element={<HomePage/>} />
             <Route path="/product/:id" element={<ProductPage/>} />
             <Route path="/cart/:id?" element={<CartPage/>} />
 

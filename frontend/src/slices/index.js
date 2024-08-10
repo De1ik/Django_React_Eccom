@@ -5,6 +5,7 @@ import cartReducer from './cartSlice';
 import authReducer from './authSlice';
 import orderReducer from './orderSlice';
 import adminReducer from './adminSlice';
+import reviewReducer from './reviewSlice';
 
 
 const rootReducer = combineReducers({
@@ -14,6 +15,7 @@ const rootReducer = combineReducers({
     authRed: authReducer,
     orderRed: orderReducer,
     adminRed: adminReducer,
+    reviewRed: reviewReducer,
 });
 
 export default rootReducer;
