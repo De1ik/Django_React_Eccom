@@ -1,11 +1,11 @@
 import React from 'react'
-import FormContainer from '../components/FormContainer'
+import FormContainer from '../../components/FormContainer'
 import { Form, Button } from 'react-bootstrap'
 import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { loginAction, getUserAction } from '../slices/authSlice'
-import Loader from '../components/Loader';
-import Message from '../components/Message';
+import { loginAction, getUserAction } from '../../slices/authSlice'
+import Loader from '../../components/Loader';
+import Message from '../../components/Message';
 import { Link } from 'react-router-dom'
 import { useNavigate, useLocation  } from 'react-router-dom'
 import { ToastContainer, toast } from 'react-toastify';
@@ -37,7 +37,6 @@ function LoginPage() {
 
 
     useEffect(() => {
-        console.log("dsfghjklkjhgfdsadfgh")
         if (location.pathname === '/login/redirect-auth-required') {
             if (localStorage.getItem('redirectAuthInfo')){
                 window.location.reload()

@@ -1,13 +1,12 @@
 import React from 'react'
 import { Button } from 'react-bootstrap'
-import { activatorAction } from '../slices/authSlice'
+import { activatorAction } from '../../slices/authSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { useState } from 'react'
-import Message from '../components/Message'
-import Loader from '../components/Loader'
+import Message from '../../components/Message'
+import Loader from '../../components/Loader'
 import { useNavigate } from 'react-router-dom'
-import { useEffect } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
 
 

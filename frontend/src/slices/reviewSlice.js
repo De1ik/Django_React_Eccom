@@ -43,7 +43,8 @@ export const createReview = createAsyncThunk(
                     'Authorization': `Bearer ${token}`,
                 }
             }
-        const { responseData } = await axios.post(`/api/reviews/${id}/create-review`, data, config)
+        const { data: responseData } = await axios.post(`/api/reviews/${id}/create-review`, data, config)
+        console.log("SLICE -> RESPONSE DATA : ", responseData )
         return responseData;
       } catch (error) {
         return rejectWithValue(error.response?.data?.message || error.message)
@@ -55,6 +56,7 @@ export const createReview = createAsyncThunk(
 export const editReview = createAsyncThunk(
     'reviews/edit',
     async ({token, id, data}, { rejectWithValue }) => {
+      console.log("SLICE -> DATA : ", data)
         try {
             const config = {
                 headers: {
@@ -62,9 +64,10 @@ export const editReview = createAsyncThunk(
                     'Authorization': `Bearer ${token}`,
                 }
             }
-        const { responseData } = await axios.put(`/api/reviews/${id}/edit-review`, data, config)
+        const { data: responseData  } = await axios.put(`/api/reviews/${id}/edit-review`, data, config)
         return responseData;
       } catch (error) {
+        console.log("ERROR")
         return rejectWithValue(error.response?.data?.message || error.message)
       }
     });
@@ -135,7 +138,6 @@ const reviewSlice = createSlice({
       .addCase(createReview.pending, (state) => {
         state.loading = true;
         state.error = null;
-        state.userReview = "";
       })
       .addCase(createReview.fulfilled, (state, action) => {
         state.loading = false;
@@ -150,10 +152,10 @@ const reviewSlice = createSlice({
       .addCase(editReview.pending, (state) => {
         state.loading = true;
         state.error = null;
-        // state.userReview = null;
+        state.userReview = null;
       })
       .addCase(editReview.fulfilled, (state, action) => {
-        // state.userReview = action.payload;
+        state.userReview = action.payload;
         state.loading = false;
       })
       .addCase(editReview.rejected, (state, action) => {

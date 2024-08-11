@@ -2,15 +2,11 @@ import React from 'react'
 import { Container, Nav, Navbar, NavDropdown, Row, Col } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
-import { logOut } from '../slices/authSlice'
 import { useNavigate } from 'react-router-dom'
-import { useEffect, useState } from 'react'
-import SearchBox from './SearchBox'
+import SearchBox from '../SearchBox'
 import { useMediaQuery } from 'react-responsive';
 
 function Header() {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { userData } = useSelector((state) => state.authRed)
 
   const isDesktopOrLaptop = useMediaQuery({ query: '(min-width: 768px)' });
@@ -33,18 +29,8 @@ function Header() {
                   <LinkContainer to={"/cart"}>
                     <Nav.Link><i className='fas fa-shopping-cart'></i>Cart</Nav.Link>
                   </LinkContainer> 
-
-                {!userData ? 
-                  <LinkContainer to={"/login"}>
-                    <Nav.Link><i className='fas fa-user'></i>Login</Nav.Link>
-                  </LinkContainer>
-                :   <>
-                      <LinkContainer to={"/profile"}>
-                        <Nav.Link><i className='fas fa-user'></i>Profile</Nav.Link>
-                      </LinkContainer>      
-                </>}
-
-                {userData && userData.is_staff &&
+                
+                  {userData && userData.is_staff &&
                   <NavDropdown
                               id="nav-dropdown-dark-example"
                               title="Admin"
@@ -62,18 +48,16 @@ function Header() {
                   </NavDropdown>
                
                 }
-
-                  {/* <NavDropdown.Item>
-                  <LinkContainer to={"/admin"}>
-                    <Nav.Link><i className='fas fa-user'></i>products</Nav.Link>
+                {!userData ? 
+                  <LinkContainer to={"/login"}>
+                    <Nav.Link><i className='fas fa-user'></i>Login</Nav.Link>
                   </LinkContainer>
-                  </NavDropdown.Item>
+                :   <>
+                      <LinkContainer to={"/profile"}>
+                        <Nav.Link><i className='fas fa-user'></i>Profile</Nav.Link>
+                      </LinkContainer>      
+                </>}
 
-                  <NavDropdown.Item>
-                  <LinkContainer to={"/admin"}>
-                    <Nav.Link><i className='fas fa-user'></i>orders</Nav.Link>
-                  </LinkContainer>
-                  </NavDropdown.Item> */}
 
               </Nav>
               </Navbar.Collapse>

@@ -1,6 +1,6 @@
 import React from 'react'
 
-function Rating({values, amount, color}) {
+function Rating({values, color, amount = 0}) {
 
     const stars = () =>{
     

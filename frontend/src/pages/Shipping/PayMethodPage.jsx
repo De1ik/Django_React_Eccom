@@ -1,10 +1,10 @@
 import React from 'react'
-import OrderSters from '../components/OrderSters'
-import FormContainer from '../components/FormContainer'
+import OrderSters from '../../components/OrderSters'
+import FormContainer from '../../components/FormContainer'
 import { Form, Button, Container } from 'react-bootstrap'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import Message from '../components/Message'
+import Message from '../../components/Message'
 
 function PayMethodPage() {
 
@@ -48,17 +48,19 @@ function PayMethodPage() {
                 {pageError && <Message type="danger">{pageError}</Message>}
                 <Form.Check
                     type="radio"
-                    label="Paypall"
+                    label="Paypall (Temporarily unavailable)"
                     name="payment"
                     value="paypall"
+                    disabled={true}
                     checked={paymentMethod === 'paypall'}
                     onChange={handleChange}
                 />
                 <Form.Check
                     type="radio"
-                    label="Google Pay"
+                    label="Google Pay (Temporarily unavailable)"
                     name="payment"
                     value="googlePay"
+                    disabled={true}
                     checked={paymentMethod === 'googlePay'}
                     onChange={handleChange}
                 />

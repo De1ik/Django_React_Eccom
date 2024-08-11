@@ -1,11 +1,11 @@
 import React from 'react'
-import FormContainer from '../components/FormContainer'
+import FormContainer from '../../components/FormContainer'
 import { Form, Button } from 'react-bootstrap'
 import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { registrateAction } from '../slices/authSlice'
-import Loader from '../components/Loader';
-import Message from '../components/Message';
+import { registrateAction } from '../../slices/authSlice'
+import Loader from '../../components/Loader';
+import Message from '../../components/Message';
 import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 

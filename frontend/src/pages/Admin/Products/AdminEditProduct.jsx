@@ -1,21 +1,19 @@
 import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { Row, Col } from 'react-bootstrap'
-import FormContainer from '../components/FormContainer'
+import FormContainer from '../../../components/FormContainer'
 import { useState } from 'react'
-import Loader from '../components/Loader'
-import Message from '../components/Message'
+import Loader from '../../../components/Loader'
 import { useSelector, useDispatch } from 'react-redux'
 import { Form, Button } from 'react-bootstrap'
-import { putUserInfoAction } from '../slices/authSlice'
-import { Link, Navigate } from 'react-router-dom'
-import Confirmation from '../components/Confirmation'
-import { logOut } from '../slices/authSlice'
+import Confirmation from '../../../components/Confirmation'
+import { logOut } from '../../../slices/authSlice'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { getProductById } from '../slices/adminSlice'
-import { updateProduct } from '../slices/adminSlice'
-import { deleteProduct } from '../slices/adminSlice'
+import { getProductById } from '../../../slices/adminSlice'
+import { updateProduct } from '../../../slices/adminSlice'
+import { deleteProduct } from '../../../slices/adminSlice'
+import AuthGuard from '../../../components/mainComponents/AuthGuard'
 
 function AdminEditProduct() {
 
@@ -95,7 +93,6 @@ function AdminEditProduct() {
                 setName(productById.name)
                 setImage(productById.image)
                 setPreview("http://127.0.0.1:8000"+productById.image)
-                // console.log("http://127.0.0.1:8000"+productById.image)
                 setBrand(productById.brand)
                     
                 setCategory(productById.category)
@@ -114,7 +111,7 @@ function AdminEditProduct() {
             e.preventDefault()
             if (changed){
                 const formData = new FormData();
-                console.log("UPDATED: "+image)
+
                 if (image) {
                     formData.append('image', image);
                 }
@@ -199,7 +196,7 @@ function AdminEditProduct() {
 
 
     return (
-        <div>
+        <AuthGuard error={error}>
             <h1 className='text-center m-4'>Product {id}</h1>
             <Row>
                     {!loading ? 
@@ -299,7 +296,7 @@ function AdminEditProduct() {
                     : <Loader/>}
             </Row>
             <Button className='my-4' onClick={() => navigate("/admin/products")}>Back to Product List</Button>
-        </div>        
+        </AuthGuard>        
       )
 }
 

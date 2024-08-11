@@ -2,18 +2,17 @@ import React, { useEffect, useState } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Button, Col, Row, Image, Form, ListGroup, Container } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { getProductById } from '../slices/productByIdSlice';
-import { getProductReviews, getUserReview, createReview, editReview } from '../slices/reviewSlice';
-import FormContainer from '../components/FormContainer';
+import { getProductById } from '../../slices/productByIdSlice';
+import { getProductReviews, getUserReview, createReview, editReview } from '../../slices/reviewSlice';
 
-import { addToCart } from '../slices/cartSlice';
-import Loader from '../components/Loader';
-import Message from '../components/Message';
-import Rating from '../components/Rating';
-import { logOut } from '../slices/authSlice';
+import { addToCart } from '../../slices/cartSlice';
+import Loader from '../../components/Loader';
+import Message from '../../components/Message';
+import Rating from '../../components/Rating';
+import { logOut } from '../../slices/authSlice';
 import { toast } from 'react-toastify'
 
-import ReactRating from 'react-rating';
+import AddCartPopUp from '../../components/AddCartPopUp';
 
 function ProductPage() {
 
@@ -38,6 +37,13 @@ function ProductPage() {
         progress: undefined,
     }
     )
+
+    const [showModal, setShowModal] = useState(false)
+    const handleClose = () => setShowModal(false);
+    const handleShow = () => {
+      addCartHandler()
+      setShowModal(true)
+    };
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -85,17 +91,6 @@ function ProductPage() {
       if (token){
         setIsAuth(true)
         dispatch(getUserReview({id, token}))
-        // .then((resultAction) => {
-        //   if (getUserReview.fulfilled.match(resultAction)){
-        //     if (userReview){
-        //       setNewComment(userReview.comment)
-        //       console.log(userReview.comment)
-        //       if (userReview.comment == ""){
-        //         setIsEdit(true)
-        //       }
-        //     }
-        //     return
-        //   }})
       }
     }, [token])
 
@@ -104,7 +99,6 @@ function ProductPage() {
           dispatch(logOut())
           setIsAuth(false)
       }
-      notifyError(revError)
   }, [revError])
 
     useEffect(() => {
@@ -148,6 +142,11 @@ function ProductPage() {
     }
 
 
+    useEffect(() => {
+      dispatch(getProductReviews(id))
+      dispatch(getProductById(id));
+    }, [userReview])
+
 
     const editHandler = () => {
       try {
@@ -155,11 +154,10 @@ function ProductPage() {
           "comment": newComment,
           "rating": newRating
         }
-        console.log("NEW RAting:" + newRating)
         dispatch(editReview({token, id, data}))
         notify("Comment was changed")
         setIsEdit(false)
-        window.location.reload()
+        // window.location.reload()
       } catch (error) {
         notifyError("Edit Comment Error: " + error)
       }
@@ -174,7 +172,7 @@ function ProductPage() {
         dispatch(createReview({token, id, data}))
         // notify("Comment was posted")
         setIsEdit(false)
-        window.location.reload()
+        // window.location.reload()
       } catch (error) {
         notifyError("Create Comment Error: " + error)
       }
@@ -184,6 +182,20 @@ function ProductPage() {
     const handleSelectChange = (event) => {
       setNewRating(Number(event.target.value));
     };
+
+
+    const submitHander = (e) => {
+      e.preventDefault()
+      if ((!revLoading && (userReview === ""))){
+        createHandler()
+      }
+      else if (isEdit){
+        editHandler()
+      }
+      else{
+        setIsEdit(!isEdit)
+      }
+    }
 
     return (
         <div>
@@ -275,16 +287,22 @@ function ProductPage() {
 
                               <ListGroup.Item className=''>
                                 {!(cartItems.find(x => x.id == id)) ?  
-                                  <Button onClick={addCartHandler} className='btn-block text-center' disabled={Number(productById.amountStock) < 1} type='button'>
+                                  <Button onClick={handleShow} className='btn-block text-center' disabled={Number(productById.amountStock) < 1} type='button'>
                                       Add To Cart
                                   </Button>
                               :
-                              <Button onClick={() => navigate(`/cart/${id}?qty=${qnty}`)} className='btn-block text-center' disabled={Number(productById.amountStock) < 1} type='button'>
+                              <Button onClick={() => navigate(`/cart/${id}?qty=${qnty}`)} variant="secondary" className='btn-block text-center' disabled={Number(productById.amountStock) < 1} type='button'>
                                See The Cart
                               </Button>
                               }
                               </ListGroup.Item>
                           </ListGroup>
+                          <AddCartPopUp
+                                    show={showModal}
+                                    handleClose={handleClose}
+                                    title="Product was Added to cart"
+                                    product={productById}
+                              />
                       </Col>
                   </Row>
                 </Col>
@@ -295,7 +313,7 @@ function ProductPage() {
                       revLoading ? <Loader /> :
                       <Container>
                         <Row className='my-3'>
-                            <Form>
+                            <Form onSubmit={submitHander}>
                                 <Form.Group className="mb-3 w-100" controlId="name">
                                     <Form.Control
                                         required
@@ -318,14 +336,14 @@ function ProductPage() {
                                 </Form.Group>
                                 {(!revLoading && (userReview === "")) ? 
                                   <>
-                                    <Button type="submit" className="w-100" onClick={() => createHandler()}>Create Comment</Button>
+                                    <Button type="submit" className="w-100">Create Comment</Button>
                                   </> :
                                   isEdit ? 
                                   <>
-                                    <Button type="submit" className="w-100" onClick={() => editHandler()}>Save Comment</Button>
+                                    <Button type="submit" className="w-100">Save Comment</Button>
                                     </>
                                     :
-                                    <Button className="w-100 btn-secondary" onClick={() => setIsEdit(!isEdit)}>Edit</Button>              
+                                    <Button type="submit" className="w-100 btn-secondary">Edit</Button>              
                                 }
                             </Form> 
                         </Row>

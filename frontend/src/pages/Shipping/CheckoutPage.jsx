@@ -1,17 +1,15 @@
 import React from 'react'
-import { Row, Col, Button, Card, ListGroup, Image, Container } from 'react-bootstrap'
+import { Row, Col, Button, Card, ListGroup, Image } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { removeFromCart, increaseQnty, decreaseQnty } from '../slices/cartSlice'
-import Message from '../components/Message'
+import Message from '../../components/Message'
 import { useState, useEffect } from 'react'
 import { Form } from 'react-bootstrap'
-import FormContainer from '../components/FormContainer'
-import OrderSters from '../components/OrderSters'
-import { createOrder } from '../slices/orderSlice'
+import OrderSters from '../../components/OrderSters'
+import { createOrder } from '../../slices/orderSlice'
 import { toast } from 'react-toastify'
-import { logOut } from '../slices/authSlice'
-// import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js"
+import { logOut } from '../../slices/authSlice'
+
 
 
 function CheckoutPage() {

@@ -1,16 +1,16 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
-import { Table, Button, Row, Col } from 'react-bootstrap'
+import { Button, Row, Col } from 'react-bootstrap'
 import { toast } from 'react-toastify'
-import Confirmation from '../components/Confirmation'
+import Confirmation from '../../../components/Confirmation'
 import { useNavigate } from 'react-router-dom'
-import { logOut } from '../slices/authSlice'
-import AuthGuard from '../components/AuthGuard'
-import { adminGetAllProducts, deleteProduct } from '../slices/adminSlice'
+import { logOut } from '../../../slices/authSlice'
+import AuthGuard from '../../../components/mainComponents/AuthGuard'
+import { adminGetAllProducts, deleteProduct } from '../../../slices/adminSlice'
 import { useLocation } from 'react-router-dom'
-import Paginate from '../components/Paginate.jsx'
-import SearchAdmin from '../components/SearchAdmin.jsx'
+import Paginate from '../../../components/Paginate.jsx'
+import SearchAdmin from '../../../components/SearchAdmin.jsx'
 
 function AdminAllProducts() {
 
@@ -136,7 +136,6 @@ function AdminAllProducts() {
         }
     }, [deleteError])
 
-    console.log(allProductsList)
 
 
 

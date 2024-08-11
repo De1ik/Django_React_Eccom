@@ -1,15 +1,16 @@
 import React from 'react'
-import { Row, Col, Button, Card, ListGroup, Image, Container } from 'react-bootstrap'
+import { Row, Col, Button, Card, ListGroup, Image } from 'react-bootstrap'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import Message from '../components/Message'
+import Message from '../../../components/Message'
 import { useState, useEffect } from 'react'
 import { Form } from 'react-bootstrap'
 import { toast } from 'react-toastify'
-import { logOut } from '../slices/authSlice'
-import { getOrderById, markDeliveredById, markPaidById } from '../slices/orderSlice'
-import Loader from '../components/Loader'
-import Confirmation from '../components/Confirmation'
+import { logOut } from '../../../slices/authSlice'
+import { getOrderById, markDeliveredById, markPaidById } from '../../../slices/orderSlice'
+import Loader from '../../../components/Loader'
+import Confirmation from '../../../components/Confirmation'
+import AuthGuard from '../../../components/mainComponents/AuthGuard'
 
 
 function AdminOrderEdit() {
@@ -171,6 +172,7 @@ const markDeliveredHandle = () => {
 
 
 return (
+  <AuthGuard error={error}>
     <div className="d-flex flex-column justify-content-center align-items-center">
     <h1 className='text-center my-4'>Order Details {orderById._id}</h1>
 
@@ -296,6 +298,7 @@ return (
   }  
 
   </div>
+  </AuthGuard>
   )
 }
 

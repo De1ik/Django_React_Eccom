@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react'
-import OrderSters from '../components/OrderSters'
-import FormContainer from '../components/FormContainer'
+import React, { useState } from 'react'
+import OrderSters from '../../components/OrderSters'
+import FormContainer from '../../components/FormContainer'
 import { Form, Button, Container } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
-import AuthGuard from '../components/AuthGuard'
+import AuthGuard from '../../components/mainComponents/AuthGuard'
 
 function ShippingPage() {
 

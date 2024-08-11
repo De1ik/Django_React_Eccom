@@ -3,13 +3,11 @@ import { useParams } from 'react-router-dom'
 import { Form, Button } from 'react-bootstrap'
 import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { loginAction, getUserAction } from '../slices/authSlice'
-import Loader from '../components/Loader';
-import Message from '../components/Message';
-import { Link } from 'react-router-dom'
+import Loader from '../../components/Loader';
+import Message from '../../components/Message';
 import { useNavigate } from 'react-router-dom'
-import FormContainer from '../components/FormContainer'
-import { resetPassConfirmAction } from '../slices/authSlice'
+import FormContainer from '../../components/FormContainer'
+import { resetPassConfirmAction } from '../../slices/authSlice'
 
 function ResetPassConf() {
     const { uid, token } = useParams()
