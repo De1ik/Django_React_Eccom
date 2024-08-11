@@ -2,9 +2,10 @@ import React, { useEffect } from 'react'
 import { Row, Col, Button, Card, ListGroup, Image } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { removeFromCart, increaseQnty, decreaseQnty } from '../slices/cartSlice'
-import Message from '../components/Message'
+import { removeFromCart, increaseQnty, decreaseQnty } from '../../slices/cartSlice'
+import Message from '../../components/Message'
 import { useState } from 'react'
+import { LinkContainer } from 'react-router-bootstrap'
 
 
 function CartPage() {
@@ -62,28 +63,32 @@ function CartPage() {
                                 <ListGroup.Item key={item.id}>
                                 <Row>
 
-                                    <Col md={2}>
-                                        <Image src={`http://127.0.0.1:8000${item.image}`} alt={item.name} style={{ maxWidth: "100%"}} fluid rounded/>
+                                    <Col md={2} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                        <LinkContainer to={`/product/${item.id}`}>
+                                            <Image src={`http://127.0.0.1:8000${item.image}`} alt={item.name} style={{ maxWidth: "100%"}} fluid rounded/>
+                                        </LinkContainer>
                                     </Col>
 
-                                    <Col md={3}>
+                                    <Col md={3} style={{ display: 'flex', alignItems: 'center' }}>
                                         <Link to={`/product/${item.id}`}>
                                             {item.name}
                                         </Link>
                                     </Col>
 
-                                    <Col md={2}>
+                                    <Col md={2} style={{ display: 'flex', alignItems: 'center' }}>
                                         ${item.price}
                                     </Col>
                                     
-                                    <Col md={3}>
+                                    <Col md={3} >
+                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                         <Button onClick={ () => decrQnty(item.id) } disabled={item.qnty <= 1}>-</Button>
                                             <span className='p-4'>{item.qnty}</span>
                                         <Button onClick={ () => incrQnty(item.id) } disabled={item.qnty >= item.amountStock} >+</Button>
+                                    </div>
                                     </Col>
 
-                                    <Col md={2}>
-                                        <Button onClick={ () => removeItem(item.id) }><i className='fas fa-trash'></i></Button>
+                                    <Col md={2} style={{ display: 'flex', alignItems: 'center' }}>
+                                        <Button className='my-2' onClick={ () => removeItem(item.id) }><i className='fas fa-trash'></i></Button>
                                     </Col>
                                 </Row>
                                 </ListGroup.Item>

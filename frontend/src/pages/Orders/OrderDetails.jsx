@@ -1,12 +1,13 @@
 import React from 'react'
-import { Row, Col, Button, Card, ListGroup, Image, Container, Form } from 'react-bootstrap'
+import { Row, Col, Card, ListGroup, Image, Form } from 'react-bootstrap'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import Message from '../components/Message'
+import Message from '../../components/Message'
 import { useEffect } from 'react'
-import Loader from '../components/Loader'
+import Loader from '../../components/Loader'
+import AuthGuard from '../../components/mainComponents/AuthGuard'
 
-import { getOrderById } from '../slices/orderSlice'
+import { getOrderById } from '../../slices/orderSlice'
 
 function OrderDetails() {
     const { id } = useParams();
@@ -34,10 +35,10 @@ function OrderDetails() {
       dispatch(getOrderById({token, id}))
     }, [])
 
-    console.log(orderShipping)
 
 
   return (
+    <AuthGuard error={error}>
     <div className="d-flex flex-column justify-content-center align-items-center">
        <h1 className='text-center my-3'>Order Details {orderById.createdAt}</h1>
 
@@ -141,6 +142,7 @@ function OrderDetails() {
     }  
 
     </div>
+    </AuthGuard>
   )
 }
 

@@ -2,37 +2,47 @@ import { useState } from 'react'
 import 'react-toastify/dist/ReactToastify.css';
 import { Container } from 'react-bootstrap'
 import { BrowserRouter as Router, Route, Routes} from 'react-router-dom'
-import Footer from './components/Footer'
-import Header from './components/Header'
-import HomePage from './pages/HomePage'
-import ProductPage from './pages/ProductPage'
-import CartPage from './pages/CartPage'
-import LoginPage from './pages/LoginPage'
-import RegistratePage from './pages/RegistratePage'
-import ProfilePage from './pages/ProfilePage'
-import ResetPass from './pages/ResetPass'
-import ResetPassConf from './pages/ResetPassConf'
-import EmailActivate from './pages/EmailActivate'
-import LoginRoute from './components/LoginRoute'
-import NoAuthRoute from './components/NoAuthRoute'
-import ShippingPage from './pages/ShippingPage'
-import PayMethodPage from './pages/PayMethodPage'
-import CheckoutPage from './pages/CheckoutPage'
-import AllOrders from './pages/AllOrders'
-import OrderDetails from './pages/OrderDetails'
-import AllUsers from './pages/AllUsers'
 import { ToastContainer } from 'react-toastify';
-import AdminUserEdit from './pages/AdminUserEdit';
-import AdminAllProducts from './pages/AdminAllProducts';
-import AdminEditProduct from './pages/AdminEditProduct';
-import AdminCreateProduct from './pages/AdminCreateProduct';
-import AdminAllOrders from './pages/AdminAllOrders';
-import AdminOrderEdit from './pages/AdminOrderEdit';
 
+import Footer from './components/mainComponents/Footer'
+import Header from './components/mainComponents/Header'
+
+
+
+
+// Main Pages
+import HomePage from './pages/MainPages/HomePage';
+import CartPage from './pages/MainPages/CartPage';
+import ProductPage from './pages/MainPages/ProductPage';
+import ProfilePage from './pages/MainPages/ProfilePage';
+
+// Auth
+import EmailActivate from './pages/Auth/EmailActivate';
+import LoginPage from './pages/Auth/LoginPage';
+import RegistratePage from './pages/Auth/RegistratePage';
+import ResetPass from './pages/Auth/ResetPass';
+import ResetPassConf from './pages/Auth/ResetPassConf';
+
+// Shipping
+import CheckoutPage from './pages/Shipping/CheckoutPage';
+import PayMethodPage from './pages/Shipping/PayMethodPage';
+import ShippingPage from './pages/Shipping/ShippingPage';
+
+// Orders
+import AllOrders from './pages/Orders/AllOrders';
+import OrderDetails from './pages/Orders/OrderDetails';
+
+// Admin
+import AdminAllProducts from './pages/Admin/Products/AdminAllProducts';
+import AdminCreateProduct from './pages/Admin/Products/AdminCreateProduct';
+import AdminEditProduct from './pages/Admin/Products/AdminEditProduct';
+import AllUsers from './pages/Admin/Users/AllUsers';
+import AdminUserEdit from './pages/Admin/Users/AdminUserEdit';
+import AdminAllOrders from './pages/Admin/Orders/AdminAllOrders';
+import AdminOrderEdit from './pages/Admin/Orders/AdminOrderEdit';
 
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>

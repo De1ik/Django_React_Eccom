@@ -2,12 +2,12 @@ import React from 'react'
 import { Form, Button } from 'react-bootstrap'
 import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import Loader from '../components/Loader';
-import Message from '../components/Message';
-import FormContainer from '../components/FormContainer'
-import { resetPassAction } from '../slices/authSlice';
+import Loader from '../../components/Loader';
+import Message from '../../components/Message';
+import FormContainer from '../../components/FormContainer'
+import { resetPassAction } from '../../slices/authSlice';
 import { useNavigate } from 'react-router-dom';
-import { resendPasswordEmail } from '../slices/authSlice'
+import { resendPasswordEmail } from '../../slices/authSlice'
 
 function ResetPass() {
 

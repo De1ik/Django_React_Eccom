@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { logOut } from '../slices/authSlice';
 import { useDispatch } from 'react-redux';
 
 const AuthGuard = ({ children}) => {

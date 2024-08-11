@@ -1,28 +1,24 @@
 import React, { useEffect } from 'react'
 import { Row, Col } from 'react-bootstrap'
-import FormContainer from '../components/FormContainer'
 import { useState } from 'react'
-import Loader from '../components/Loader'
-import Message from '../components/Message'
+import Loader from '../../components/Loader'
+import Message from '../../components/Message'
 import { useSelector, useDispatch } from 'react-redux'
 import { Form, Button, ListGroup, Container } from 'react-bootstrap'
-import { putUserInfoAction } from '../slices/authSlice'
-import { Link, Navigate } from 'react-router-dom'
-import Confirmation from '../components/Confirmation'
-import { logOut } from '../slices/authSlice'
+import { putUserInfoAction } from '../../slices/authSlice'
+import { Link } from 'react-router-dom'
+import Confirmation from '../../components/Confirmation'
+import { logOut } from '../../slices/authSlice'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import AuthGuard from '../components/AuthGuard'
-import { getLatestOrders } from '../slices/orderSlice'
-import Order from '../components/Order'
-import { useMediaQuery } from 'react-responsive';
+import AuthGuard from '../../components/mainComponents/AuthGuard'
+import { getLatestOrders } from '../../slices/orderSlice'
+import Order from '../../components/Order'
 
 
 
 function ProfilePage() {
 
-    const isDesktopOrLaptop = useMediaQuery({ query: '(min-width: 768px)' });
-    const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
 
     const notifySuccess = (message) => toast.success(message, {
         position: "bottom-right",
@@ -51,7 +47,6 @@ function ProfilePage() {
     const { latestOrders, loading: orderLoad, error: orderError} = useSelector((state) => state.orderRed)
     
     const authRed = useSelector((state) => state.authRed)
-    console.log("AUTH RED : ", authRed)
 
     const [token, setToken] = useState("")
     const [email, setUserEmail] = useState("")

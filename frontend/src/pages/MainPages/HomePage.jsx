@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import { Container, Row, Col} from 'react-bootstrap'
-import Product from '../components/Product.jsx'
+import Product from '../../components/Product.jsx'
 import { useDispatch, useSelector } from 'react-redux'
-import { listProducts } from '../slices/productListSlice.js'
-import Loader from '../components/Loader.jsx'
-import Message from '../components/Message.jsx'
+import { listProducts } from '../../slices/productListSlice.js'
+import Loader from '../../components/Loader.jsx'
+import Message from '../../components/Message.jsx'
 import { useLocation } from 'react-router-dom'
-import Paginate from '../components/Paginate.jsx'
-import ProductCarousel from '../components/ProductCarousel.jsx'
-import SearchBox from '../components/SearchBox.jsx'
+import Paginate from '../../components/Paginate.jsx'
+import ProductCarousel from '../../components/ProductCarousel.jsx'
+import SearchBox from '../../components/SearchBox.jsx'
 import { useMediaQuery } from 'react-responsive';
+
 
 
 
@@ -29,8 +30,6 @@ function HomePage() {
     const { products, loading, error, page, pages, prdTopRating } = useSelector((state) => state.productsList)
 
     const [searchKeyword, setSearchKeyword] = useState("")
-
-
 
     useEffect(() => {
       let path = ""
@@ -55,13 +54,8 @@ function HomePage() {
           <h1 className="text-center m-4">Latest Products</h1> 
           : <h1 className="text-center m-4">Searched: {keyword}</h1>}
 
-          {isMobile && 
-            <div className="d-flex flex-column justify-content-center align-items-center">
-              <SearchBox/>
-            </div>
-          }
-          <div className="d-flex flex-column justify-content-center align-items-center">
-            <SearchBox withOrder={true}/>
+          <div className="d-flex flex-column justify-content-center align-items-center border-bottom pb-4">
+            <SearchBox withOrder={true} withClear={true} />
           </div>
   
           {loading ? (
@@ -85,6 +79,7 @@ function HomePage() {
           )}
         </div>
         <Paginate page={page} pages={pages} keyword={searchKeyword} pathname={defaultPathname} />
+
       </>
     )
   }

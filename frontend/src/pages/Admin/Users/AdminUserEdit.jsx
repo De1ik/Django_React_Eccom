@@ -1,21 +1,19 @@
 import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { Row, Col } from 'react-bootstrap'
-import FormContainer from '../components/FormContainer'
+import FormContainer from '../../../components/FormContainer'
 import { useState } from 'react'
-import Loader from '../components/Loader'
-import Message from '../components/Message'
+import Loader from '../../../components/Loader'
 import { useSelector, useDispatch } from 'react-redux'
 import { Form, Button } from 'react-bootstrap'
-import { putUserInfoAction } from '../slices/authSlice'
-import { Link, Navigate } from 'react-router-dom'
-import Confirmation from '../components/Confirmation'
-import { logOut } from '../slices/authSlice'
+import Confirmation from '../../../components/Confirmation'
+import { logOut } from '../../../slices/authSlice'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { getUserById } from '../slices/adminSlice'
-import { updateUser } from '../slices/adminSlice'
-import { deleteUser } from '../slices/adminSlice'
+import { getUserById } from '../../../slices/adminSlice'
+import { updateUser } from '../../../slices/adminSlice'
+import { deleteUser } from '../../../slices/adminSlice'
+import AuthGuard from '../../../components/mainComponents/AuthGuard'
 
 
 function AdminUserEdit() {
@@ -164,7 +162,7 @@ function AdminUserEdit() {
 
 
   return (
-    <div>
+    <AuthGuard error={error}>
         <h1 className='text-center m-4'>User Edit</h1>
         <Row>
                 <h2 className='text-center p-4'>Your Information</h2>
@@ -234,7 +232,7 @@ function AdminUserEdit() {
                 : <Loader/>}
         </Row>
         <Button className='my-4' onClick={() => navigate("/admin/users")}>Back to User List</Button>
-    </div>        
+    </AuthGuard>        
   )
 }
 

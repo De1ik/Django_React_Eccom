@@ -1,18 +1,17 @@
 import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { Row, Col } from 'react-bootstrap'
-import FormContainer from '../components/FormContainer'
+import FormContainer from '../../../components/FormContainer'
 import { useState } from 'react'
-import Loader from '../components/Loader'
+import Loader from '../../../components/Loader'
 import { useSelector, useDispatch } from 'react-redux'
 import { Form, Button } from 'react-bootstrap'
-import { Link, Navigate } from 'react-router-dom'
-import Confirmation from '../components/Confirmation'
-import { logOut } from '../slices/authSlice'
+import Confirmation from '../../../components/Confirmation'
+import { logOut } from '../../../slices/authSlice'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { updateProduct } from '../slices/adminSlice'
-import { createProduct } from '../slices/adminSlice'
+import { createProduct } from '../../../slices/adminSlice'
+import AuthGuard from '../../../components/mainComponents/AuthGuard'
 
 function AdminCreateProduct() {
 
@@ -122,7 +121,6 @@ function AdminCreateProduct() {
 
     const handleFileChange = (e) => {
         const file = e.target.files[0]
-        console.log("NEW FILE: " + file)
         setImage(file)
     
         const reader = new FileReader()
@@ -134,7 +132,7 @@ function AdminCreateProduct() {
 
 
     return (
-        <div>
+        <AuthGuard error={error}>
             <h1 className='text-center m-4'>Product {id}</h1>
             <Row>
                     {!loading ? 
@@ -150,6 +148,7 @@ function AdminCreateProduct() {
                                     onChange={(e) => setName(e.target.value)}
                                 />
                             </Form.Group>
+                            <span style={{fontSize:"small"}}>*For correct display on the site, make sure that the image has dimensions 640*510</span>
                             <Form.Group className="mb-3" controlId="image">
                                 <Form.Control
                                     type="file"
@@ -235,7 +234,7 @@ function AdminCreateProduct() {
                     : <Loader/>}
             </Row>
             <Button className='my-4' onClick={() => navigate("/admin/products")}>Back to User List</Button>
-        </div>        
+        </AuthGuard>        
       )
 }
 

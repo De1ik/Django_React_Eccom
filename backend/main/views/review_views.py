@@ -92,22 +92,32 @@ class EditReview(APIView):
         
         review = product.review_set.get(user=user)
 
+
+
         review.comment=data["comment"]
         review.rating=data["rating"]
 
+        review.save()
+
         product_reviews = product.review_set.all()
+
+        for rev in product_reviews:
+            if (rev.user == user):
+               rev =  review
+
         product.amountReviews = len(product_reviews)
 
         total_rating = sum(rev.rating for rev in product_reviews)
 
         product.rating = total_rating / len(product_reviews)
         
-        review.save()
         product.save()
+
 
         serializer = ReviewSerializer(review, many=False) 
 
-        return Response(serializer.data)
+
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
     
 
 class DeleteReview(APIView):
