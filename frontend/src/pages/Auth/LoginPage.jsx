@@ -13,6 +13,17 @@ import { ToastContainer, toast } from 'react-toastify';
 
 function LoginPage() {
 
+    const notify = (message) => toast.success(message, {
+        position: "bottom-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+    }
+    )
+
     const location = useLocation()
     const dispatch = useDispatch()
     const navigate = useNavigate();
@@ -23,17 +34,6 @@ function LoginPage() {
     const [reload, setReload] = useState(false)
 
     const { loading, error, emailAcivated, isAuth } = useSelector((state) => state.authRed)
-
-    const notify = () => toast.success("User login successfully!", {
-        position: "bottom-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-    }
-    );
 
 
     useEffect(() => {
@@ -93,14 +93,21 @@ function LoginPage() {
             });
     }
 
+    useEffect(() => {
+        if (emailAcivated){
+            notify("Your mail has been successfully confirmed")
+        }
+
+    }, [emailAcivated])
+
 
 
   return (
     <>
     <h1 className='text-center m-5'>Sign In</h1>
-    {error && <Message type="danger">{error}</Message>}
-    {errorPage && <Message type="danger">{errorPage}</Message>}
-    {emailAcivated && <Message type="success">Email was activated</Message>}
+    {errorPage && !errorPage.includes("401") && <Message type="danger">{errorPage}</Message>}
+    {errorPage && errorPage.includes("401") && <Message type="danger">{"Username or Password does not match"}</Message>}
+    {/* {emailAcivated && <Message type="success">Email was activated</Message>} */}
     {loading ? <Loader/> : 
         <>
         <FormContainer>

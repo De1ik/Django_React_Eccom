@@ -92,7 +92,7 @@ function OrderDetails() {
                                     <ListGroup.Item key={item._id} >
                                     <Row >
                                         <Col>
-                                            <Image src={"/images/"+item.image} alt={item.name} fluid rounded style={{
+                                            <Image src={"https://teddy-shop-demo.s3.eu-north-1.amazonaws.com/" + item.image} alt={item.name} fluid rounded style={{
                                             maxWidth: "100px", 
                                             display: "block",
                                             }}/>

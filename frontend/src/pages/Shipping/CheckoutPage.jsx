@@ -237,7 +237,7 @@ function CheckoutPage() {
                                         <Row>
 
                                             <Col md={3}>
-                                                <Image src={item.image} alt={item.name} fluid rounded/>
+                                                <Image src={item.image.split("?")[0]} alt={item.name} fluid rounded/>
                                             </Col>
 
                                             <Col md={5}>

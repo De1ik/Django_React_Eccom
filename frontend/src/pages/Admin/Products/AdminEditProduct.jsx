@@ -92,7 +92,7 @@ function AdminEditProduct() {
             if (productById !== null){
                 setName(productById.name)
                 setImage(productById.image)
-                setPreview("http://127.0.0.1:8000"+productById.image)
+                setPreview(productById.image.split("?")[0])
                 setBrand(productById.brand)
                     
                 setCategory(productById.category)
@@ -280,7 +280,7 @@ function AdminEditProduct() {
                                 </Col>
                                 <Col md={6} className='d-flex flex-column justify-content-center align-items-right'>
                                     <Button variant="danger"  onClick={handleShow}>
-                                        Delete User
+                                        Delete Product
                                     </Button>
                                 </Col>
                             </Row>
