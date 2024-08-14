@@ -207,7 +207,7 @@ function ProductPage() {
               (<Row>
                 <Col md={5}>
                   <Container>
-                    <Image src={`http://127.0.0.1:8000${productById.image}`} alt={productById.name} style={{ maxWidth: "100%", maxHeight: "60%"}}/>
+                    <Image src={`${productById.image.split("?")[0]}`} alt={productById.name} style={{ maxWidth: "100%", maxHeight: "60%"}}/>
                     
                     <ListGroup className='my-4'> 
                       <ListGroup.Item>
@@ -370,7 +370,7 @@ function ProductPage() {
                       
                             {reviewList && reviewList.map(review => (
                                   <>
-                                  {userId === review.user ? null :
+                                  {
                                     <ListGroup.Item key={review._id}>
                                         <h5><strong>{review.name}</strong></h5>
                                         <hr/>

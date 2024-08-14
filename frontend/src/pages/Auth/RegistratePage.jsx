@@ -46,9 +46,9 @@ function RegistratePage() {
     <div>
     <h1 className='text-center m-5'>Sign Up</h1>
 
-    {error && <Message type="danger">{error}</Message>}
+    {error && error.includes("400") && <Message type="danger">{"The password doesn't match the rights"}</Message>}
 
-    {registrateSucces ? <h2>Check Mail in Gmail</h2> : 
+    {registrateSucces ? <h3 className='text-center'><strong>The activation letter has been sent to your email, please check your email</strong></h3> : 
     <>
     {!loading ? 
         <FormContainer>
@@ -71,9 +71,16 @@ function RegistratePage() {
                         onChange={(e) => setEmail(e.target.value)}
                     />
                 </Form.Group>
-                <Form.Group className="mb-3" controlId="password">
+                <span style={{fontSize:"small"}}>
+                    *min length - 8 <br/>
+                    *min one letter <br/>
+                    *min one number <br/>
+                    *can not be easy like: <strong>qwerty12345</strong>
+                </span>
+                <Form.Group className="mb-3 mt-1" controlId="password">
                     <Form.Control
                         required
+                        minLength={8}
                         type='password'
                         placeholder='Enter password'
                         value={password}

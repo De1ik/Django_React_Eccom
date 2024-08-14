@@ -14,6 +14,9 @@ function ResetPassConf() {
     const [password, setPassword] = useState("")
     const [errorPage, setError] = useState("")
     const [confPassword, setConfPass] = useState("")
+    const [message, setMessage] = useState("")
+    const [isDisabled, setIsDisabled] = useState(true)
+
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const { loading, error, resetPassSuccess, isAuth } = useSelector((state) => state.authRed)
@@ -44,16 +47,35 @@ function ResetPassConf() {
         }
     }
 
+    useEffect(() => {
+      if (password === confPassword && password !== ""){
+        setIsDisabled(false)
+        setMessage("")
+      }
+      else if (password !== "" && confPassword !== "" && password !== confPassword){
+          setMessage("passwords must be equal")
+      }
+      else{
+          setMessage("")
+      }
+  }, [password, confPassword])
+
     
   return (
     <div>
       <h1 className='text-center my-5'>Reset Password</h1>
-      {errorPage && <Message type="danger">{errorPage}</Message>}
-      {error && <Message type="danger">{error}</Message>}
+      {error && !error.includes("400") && <Message type="danger">{error}</Message>}
+      {error && error.includes("400") && <Message type="danger">{"The password doesn't match the rights"}</Message>}
       {loading ? <Loader/> : <>
           <FormContainer>
                   <Form onSubmit={resetPassHandler}>
-                    <Form.Group className="mb-3" controlId="password">
+                  <span style={{fontSize:"small"}}>
+                    *min length - 8 <br/>
+                    *min one letter <br/>
+                    *min one number <br/>
+                    *can not be easy like: <strong>qwerty12345</strong>
+                  </span>
+                    <Form.Group className="mb-3 mt-2" controlId="password">
                       <Form.Control 
                         required
                         type='password'
@@ -69,7 +91,8 @@ function ResetPassConf() {
                         onChange={(e) => setConfPass(e.target.value)}
                       />
                     </Form.Group>
-                    <Button variant="primary" type='submit'>
+                    {message && <Message type="warning">{message}</Message>}
+                    <Button variant="primary" type='submit' disabled={isDisabled}>
                       Reset Password
                     </Button>
                   </Form>

@@ -6,11 +6,13 @@ import { useState } from 'react'
 import AddCartPopUp from './AddCartPopUp'
 import { addToCart } from '../slices/cartSlice'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 
 
 function Product({product}) {
 
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const cartItems = useSelector((state) => state.cartRed.cartItems)
   const [qnty, setQnty] = useState(1); 
@@ -42,11 +44,15 @@ function Product({product}) {
     }))
   }
 
+  const handleNavigate = () => {
+    navigate(`/cart`)
+  }
+
   return (
     <Card className="my-3 p-3 rounded product-card" style={{height:"auto"}}>
     <Link to={`/product/${product._id}`}>
       <Card.Img
-        src={`http://127.0.0.1:8000${product.image}`}
+        src={`${product.image.split("?")[0]}`}
         alt={product.name}
         className="product-image"
         
@@ -79,7 +85,7 @@ function Product({product}) {
                   Add To Cart
               </Button>
           :
-          <Button onClick={() => navigate(`/cart`)} className='btn-block text-center py-2'variant='secondary' disabled={Number(product.amountStock) < 1} type='button'>
+          <Button onClick={handleNavigate} className='btn-block text-center py-2' variant='secondary' type='button'>
            See The Cart
           </Button>
       }                           

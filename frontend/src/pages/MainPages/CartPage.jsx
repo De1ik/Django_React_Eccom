@@ -65,7 +65,7 @@ function CartPage() {
 
                                     <Col md={2} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                         <LinkContainer to={`/product/${item.id}`}>
-                                            <Image src={`http://127.0.0.1:8000${item.image}`} alt={item.name} style={{ maxWidth: "100%"}} fluid rounded/>
+                                            <Image src={`${item.image.split("?")[0]}`} alt={item.name} style={{ maxWidth: "100%"}} fluid rounded/>
                                         </LinkContainer>
                                     </Col>
 

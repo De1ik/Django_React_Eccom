@@ -19,7 +19,7 @@ const AddCartPopUp = ({ show, handleClose, title, product}) => {
                 <ListGroup.Item key={product.id}>
                     <Row>
                         <Col>
-                            <Image src={`http://127.0.0.1:8000${product.image}`} alt={product.name} style={{ maxWidth: "100%"}} fluid rounded/>
+                            <Image src={`${product.image.split("?")[0]}`} alt={product.name} style={{ maxWidth: "100%"}} fluid rounded/>
                         </Col>
                         <Col>
                             <Link to={`/product/${product.id}`}>

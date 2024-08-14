@@ -22,7 +22,7 @@ function ProductCarousel() {
         {prdTopRating.map(product => (
           <Carousel.Item key={product._id}>
             <Link to={`/product/${product._id}`}>
-              <Image src={`http://127.0.0.1:8000${product.image}`} alt={product.name} fluid className="carousel-image"/>
+              <Image src={`${product.image.split("?")[0]}`} alt={product.name} fluid className="carousel-image"/>
               <Carousel.Caption className='carousel-caption'>
                 <h3>{product.name} (${product.price})</h3>
               </Carousel.Caption>

@@ -8,6 +8,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from django.contrib.auth.models import User
+from ..models import Product, Review
 from django.contrib.auth.hashers import make_password
 from rest_framework import status
 
@@ -55,6 +56,12 @@ class UpdateUserInfo(APIView):
         user.first_name = data["first_name"]
 
         user.save()
+
+        reviews = Review.objects.filter(user=user)
+        for review in reviews:
+            review.name = user.first_name
+            review.save()
+
 
         return Response(serializer.data)
 

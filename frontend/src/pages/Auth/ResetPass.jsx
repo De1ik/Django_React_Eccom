@@ -70,6 +70,7 @@ function ResetPass() {
                     <Form.Group className="mb-3" controlId="email">
                       <Form.Control 
                         required
+                        // disabled={true}
                         type='email'
                         placeholder='Enter email'
                         value={email}
