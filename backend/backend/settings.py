@@ -149,27 +149,29 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+
 # DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
+#     # 'default': {
+#     #     'ENGINE': 'django.db.backends.postgresql',
+#     #     'NAME': 'teddyshop',
+#     #     'USER': 'postgres',
+#     #     'PASSWORD': 'root_135086',
+#     #     'HOST': 'localhost',
+#     #     'PORT': '5432'
+#     # }
+#     'default': dj_database_url.config(          
+#         default=f'postgresql://{os.getenv("USER")}:{os.getenv("PASSWORD")}@{os.getenv("HOST")}:{os.getenv("PORT")}/{os.getenv("NAME")}',        
+#         conn_max_age=600    
+#     )
 # }
 
-DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.postgresql',
-    #     'NAME': 'teddyshop',
-    #     'USER': 'postgres',
-    #     'PASSWORD': 'root_135086',
-    #     'HOST': 'localhost',
-    #     'PORT': '5432'
-    # }
-    'default': dj_database_url.config(          
-        default=f'postgresql://{os.getenv("USER")}:{os.getenv("PASSWORD")}@{os.getenv("HOST")}:{os.getenv("PORT")}/{os.getenv("NAME")}',        
-        conn_max_age=600    
-    )
-}
+DATABASES["default"] = dj_database_url.parse("postgresql://root:ldAUX8XGWXosUq1ih2dLqQc4OHOiIHiK@dpg-cqv2h0qj1k6c73dp50o0-a.frankfurt-postgres.render.com/teddyshop")
 
 
 # Password validation
