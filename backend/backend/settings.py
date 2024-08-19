@@ -21,18 +21,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv(os.path.join(BASE_DIR, '.env'))
 
-APPEND_SLASH = True
+APPEND_SLASH = False
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = os.getenv('SECRET_KEY', 'rr23ftg5g6y78uytertf5675g')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', "False").lower() == 'True'
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(" ")
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost 127.0.0.1').split(" ")
 
 
 # Application definition
@@ -156,7 +156,8 @@ DATABASES = {
     }
 }
 
-DATABASES["default"] = dj_database_url.parse(os.getenv('DATABASES_URL'))
+if (DEBUG == True):
+    DATABASES["default"] = dj_database_url.parse(os.getenv('DATABASES_URL'))
 
 
 # Password validation
