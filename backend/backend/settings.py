@@ -27,12 +27,12 @@ APPEND_SLASH = True
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-t&(lyqjl+h6t2orad2vtrnhp1yak%)e9t*4m7@7*1c&!6-uake'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.getenv('DEBUG', "False").lower() == 'True'
 
-ALLOWED_HOSTS = ['localhost', "127.0.0.1"]
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(" ")
 
 
 # Application definition
@@ -156,22 +156,7 @@ DATABASES = {
     }
 }
 
-# DATABASES = {
-#     # 'default': {
-#     #     'ENGINE': 'django.db.backends.postgresql',
-#     #     'NAME': 'teddyshop',
-#     #     'USER': 'postgres',
-#     #     'PASSWORD': 'root_135086',
-#     #     'HOST': 'localhost',
-#     #     'PORT': '5432'
-#     # }
-#     'default': dj_database_url.config(          
-#         default=f'postgresql://{os.getenv("USER")}:{os.getenv("PASSWORD")}@{os.getenv("HOST")}:{os.getenv("PORT")}/{os.getenv("NAME")}',        
-#         conn_max_age=600    
-#     )
-# }
-
-DATABASES["default"] = dj_database_url.parse("postgresql://root:ldAUX8XGWXosUq1ih2dLqQc4OHOiIHiK@dpg-cqv2h0qj1k6c73dp50o0-a.frankfurt-postgres.render.com/teddyshop")
+DATABASES["default"] = dj_database_url.parse(os.getenv('DATABASES_URL'))
 
 
 # Password validation
@@ -268,7 +253,7 @@ DJOSER = {
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
-AWS_S3_REGION_NAME =  os.getenv('AWS_S3_REGION_NAME')  # Например, 'us-west-1'
+AWS_S3_REGION_NAME =  os.getenv('AWS_S3_REGION_NAME') 
 AWS_S3_SIGNATURE_VERSION = 's3v4'
 AWS_S3_FILE_OVERWRITE = False
 AWS_DEFAULT_ACL = None
