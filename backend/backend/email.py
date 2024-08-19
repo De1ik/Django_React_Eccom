@@ -29,8 +29,8 @@ class PasswordResetEmail(email.PasswordResetEmail):
 
     def get_context_data(self):
         context = super().get_context_data()
-        context['protocol'] = 'http'
-        context['domain'] = 'localhost:5173' 
+        context['protocol'] = 'https'
+        context['domain'] = 'teddyshop-8p3e.onrender.com' 
         self.subject = "Password Reset Request Teddy Shop"
         return context
 
@@ -56,8 +56,8 @@ class ActivationEmail(email.ActivationEmail):
 
     def get_context_data(self):
         context = super().get_context_data()
-        context['protocol'] = 'http'
-        context['domain'] = 'localhost:5173'
+        context['protocol'] = 'https'
+        context['domain'] = 'teddyshop-8p3e.onrender.com'
         self.subject = "Account Activation Teddy Shop"
         return context
 
