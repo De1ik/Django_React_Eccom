@@ -17,8 +17,8 @@
 <ul>
 <li><strong>Frontend:</strong> React</li>
 <li><strong>Backend:</strong> Django</li>
-<li><strong>Database:</strong> PostgreSQL</li>
-<li><strong>Database:</strong> Redux</li>
+<li><strong>Database:</strong> PostgreSQL and pictures are on the AWS bucket</li>
+<li><strong>State Management:</strong> Redux</li>
 </ul>
 
 <h2>Getting Started</h2>
@@ -50,8 +50,11 @@
         <pre><code>pip install -r requirements.txt</code></pre>
       </li>
       <li>
-        Set up the database:
+        Set up the database (in development mode - when debug == True, it uses sqlite to easier instalattion):
         <pre><code>python manage.py migrate</code></pre>
+      </li>
+      <li>
+        In the file <strong>seetting.py</strong> Change the required variable (like EMAIL_HOST_USER or AWS_ACCESS_KEY_ID) to yourself for correct work
       </li>
       <li>
         Run the development server:
@@ -64,7 +67,7 @@
     <p></p>
     <ul>
       <li>
-        Navigate to the frontend directory:
+        From the root folder navigate to the frontend directory:
         <pre><code>cd frontend</code></pre>
       </li>
       <li>
@@ -78,3 +81,9 @@
     </ul>
   </li>
 </ol>
+
+<h3>Usage</h3>
+<ul>
+  <li>Access the frontend at http://147.175.161.115:5173/</li>
+  <li>Access the backend admin panel at http://127.0.0.1:8000/admin/</li>
+</ul>
