@@ -1,4 +1,13 @@
-<h2>Features</h1>
+<h1>Teddy Shop</h1>
+<p>E-commerce website with admin jwt registration, email confirmation, admin panel and much more..</p>
+<h2>Agenda</h2>
+<ul>
+  <li>Interaction with App</li>
+  <li>Technologies Used</li>
+  <li>Getting Started</li>
+</ul>
+
+<h2>Interaction</h1>
 <h3> User Features:</h3>
 <ul>
 <li><strong>User Registration & Authentication:</strong> Secure user registration with JWT tokens. Includes email verification for account activation and password reset functionality.</li>
@@ -17,7 +26,7 @@
 <ul>
 <li><strong>Frontend:</strong> React</li>
 <li><strong>Backend:</strong> Django</li>
-<li><strong>Database:</strong> PostgreSQL and pictures are on the AWS bucket</li>
+<li><strong>Database:</strong> PostgreSQL (for development version can be used SQLite for quick start). Pictures are saved on AWS bucket</li>
 <li><strong>State Management:</strong> Redux</li>
 </ul>
 
@@ -50,11 +59,11 @@
         <pre><code>pip install -r requirements.txt</code></pre>
       </li>
       <li>
-        Set up the database (in development mode - when debug == True, it uses sqlite to easier instalattion):
+        Set up the database (by default it using the SQLite for quick instalattion, but you can check it in settings.py):
         <pre><code>python manage.py migrate</code></pre>
       </li>
       <li>
-        In the file <strong>seetting.py</strong> Change the required variable (like EMAIL_HOST_USER or AWS_ACCESS_KEY_ID) to yourself for correct work
+        In the file <strong>seetting.py</strong> change the required variable (like EMAIL_HOST_USER or AWS_ACCESS_KEY_ID) to yourself for correct work
       </li>
       <li>
         Run the development server:
